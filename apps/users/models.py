@@ -24,8 +24,8 @@ class Region(BaseModel):
 class User(AbstractUser, BaseModel):
     full_name = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=15, unique=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
 
     username = None
 
