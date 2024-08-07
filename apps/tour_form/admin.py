@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TourType, Country, City
+from .models import TourType, Country, City, TourPeople, TourOffer, TourForm
 
 
 class CountryInline(admin.TabularInline):
@@ -29,3 +29,24 @@ class CountryAdmin(admin.ModelAdmin):
     search_fields = ["name"]
     ordering = ["order", "name"]
     inlines = [CityInline]
+
+
+class TourPeopleInline(admin.TabularInline):
+    model = TourPeople
+    extra = 0
+
+
+@admin.register(TourForm)
+class TourFormAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone"]
+    list_filter = ["user", "region", "tour_type", "country"]
+    list_per_page = 25
+    inlines = [TourPeopleInline]
+
+
+@admin.register(TourOffer)
+class TourOfferAdmin(admin.ModelAdmin):
+    list_display = ["tour_form", "status"]
+    list_filter = ["tour_form"]
+    list_per_page = 25
+    ordering = ["-created_at"]

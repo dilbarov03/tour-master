@@ -1,16 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from apps.users.models import User, Branch, Region
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     list_display = ('id', 'phone', 'full_name', 'phone')
     list_display_links = ('id', 'phone')
     search_fields = ('phone', 'full_name', 'phone')
     list_filter = ('is_active', 'is_staff', 'is_superuser')
+    ordering = ('phone',)
     list_per_page = 25
 
     fieldsets = (
@@ -18,6 +20,12 @@ class UserAdmin(admin.ModelAdmin):
         ('Personal info', {'fields': ('full_name', 'branch', 'region')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('phone', 'password1', 'password2'),
+        }),
     )
 
 

@@ -40,4 +40,4 @@ class User(AbstractUser, BaseModel):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return self.full_name or self.email
+        return self.full_name or self.phone
