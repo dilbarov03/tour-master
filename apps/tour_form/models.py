@@ -22,7 +22,8 @@ class TourType(BaseModel):
 
 class Country(BaseModel):
     name = models.CharField(max_length=255, verbose_name="Название")
-    tour_type = models.ForeignKey(TourType, on_delete=models.CASCADE, verbose_name="Тип тура")
+    tour_type = models.ForeignKey(TourType, on_delete=models.CASCADE, verbose_name="Тип тура",
+                                   related_name="countries")
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
 
@@ -39,7 +40,8 @@ class Country(BaseModel):
 
 class City(BaseModel):
     name = models.CharField(max_length=255, verbose_name="Название")
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Страна")
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Страна",
+                                related_name="cities")
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
 
