@@ -30,3 +30,16 @@ def send_booking_message(booking):
 
     send_telegram_message(text)
     return
+
+
+def send_form_message(form):
+    text = f'<b>Новая заявка на тур </b>\n\n'
+    text += f'<b>Тип тура:</b> {form.tour_type.name}\n'
+    text += f'<b>Из региона:</b> {form.region.name if form.region else "Неизвестно"}\n'
+    text += f'<b>Страна:</b> {form.country.name}\n'
+    text += f'<b>Город:</b> {form.city.name}\n\n'
+    text += f'<b>Подробности:</b>\n'
+    text += f'{BASE_URL}/admin/tour_form/tourform/{form.id}/change/\n'
+
+    send_telegram_message(text)
+    return

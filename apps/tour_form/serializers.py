@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import TourType, Country, City, TourPeople, TourForm, TourOffer
+from ..common.utils import send_form_message
 
 
 class TourTypeSerializer(serializers.ModelSerializer):
@@ -41,12 +42,21 @@ class TourFormSerializer(serializers.ModelSerializer):
                   "from_date", "to_date", "holidays", "phone", "comment", "tour_people",
                   "has_answered", "status", "full_name")
 
+    def validate(self, attrs):
+        tour_people = attrs["tour_people"]
+        if len(tour_people) == 0:
+            raise serializers.ValidationError("At least one person should be in the tour")
+        elif len(tour_people) > 15:
+            raise serializers.ValidationError("Maximum 15 people can be in the tour")
+        return attrs
+
     def create(self, validated_data):
         tour_people_data = validated_data.pop("tour_people")
         user = self.context["request"].user
-        tour_form = TourForm.objects.create(user=user, **validated_data)
+        tour_form = TourForm.objects.create(user=user, region=user.region, **validated_data)
         for tour_people_data in tour_people_data:
             TourPeople.objects.create(tour_form=tour_form, **tour_people_data)
+        send_form_message(tour_form)
         return tour_form
 
     def get_has_answered(self, obj):

@@ -1,5 +1,7 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.utils import timezone
+from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
 from apps.tour_form.managers import ActiveManager
@@ -113,8 +115,8 @@ class TourOffer(BaseModel):
 
     tour_form = models.OneToOneField(TourForm, on_delete=models.CASCADE, verbose_name="Заявка на тур",
                                   related_name="tour_offer")
-    image = models.ImageField(upload_to="tour_offers", verbose_name="Изображение")
-    text = models.TextField(verbose_name="Текст")
+    image = ResizedImageField(upload_to="tour_offers", verbose_name="Изображение")
+    text = RichTextUploadingField(verbose_name="Текст")
     status = models.CharField(max_length=255, verbose_name="Статус", choices=Status.choices, default=Status.NEW)
 
     class Meta:

@@ -1,5 +1,7 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.db.models import Min
+from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
 from apps.tour_catalog.managers import TourManager, TourPriceManager
@@ -23,8 +25,8 @@ class Tour(BaseModel):
     name = models.CharField(max_length=255, verbose_name='Название тура')
     category = models.ForeignKey(TourCategory, on_delete=models.CASCADE, verbose_name='Категория',
                                  related_name='tours')
-    description = models.TextField(verbose_name='Описание')
-    image = models.ImageField(upload_to='tour_images', verbose_name='Изображение')
+    description = RichTextUploadingField(verbose_name='Описание')
+    image = ResizedImageField(upload_to='tour_images', verbose_name='Изображение')
     start_date = models.DateField(verbose_name='Дата начала')
     days_count = models.PositiveIntegerField(verbose_name='Количество дней')
     people_count = models.PositiveIntegerField(verbose_name='Количество человек')
