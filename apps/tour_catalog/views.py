@@ -1,8 +1,8 @@
 import django_filters.rest_framework as filters
 from rest_framework import generics
 
-from .models import Tour, TourCategory
-from .serializers import TourCategorySerializer, TourListSerializer, TourDetailSerializer
+from .models import Tour, TourCategory, UserBooking
+from .serializers import TourCategorySerializer, TourListSerializer, TourDetailSerializer, UserBookingSerializer
 
 
 class TourCategoryListAPIView(generics.ListAPIView):
@@ -20,3 +20,8 @@ class TourListAPIView(generics.ListAPIView):
 class TourDetailAPIView(generics.RetrieveAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourDetailSerializer
+
+
+class UserBookingCreateAPIView(generics.CreateAPIView):
+    queryset = UserBooking.objects.all()
+    serializer_class = UserBookingSerializer
