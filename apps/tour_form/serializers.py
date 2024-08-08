@@ -33,12 +33,13 @@ class TourFormSerializer(serializers.ModelSerializer):
     tour_people = TourPeopleSerializer(many=True)
     has_answered = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = TourForm
         fields = ("id", "room_count", "tour_type", "country", "city",
                   "from_date", "to_date", "holidays", "phone", "comment", "tour_people",
-                  "has_answered", "status")
+                  "has_answered", "status", "full_name")
 
     def create(self, validated_data):
         tour_people_data = validated_data.pop("tour_people")
@@ -53,6 +54,10 @@ class TourFormSerializer(serializers.ModelSerializer):
 
     def get_status(self, obj):
         return obj.tour_offer.status if hasattr(obj, "tour_offer") else "new"
+
+    def get_full_name(self, obj):
+        person = obj.tour_people.first()
+        return person.full_name if person else ""
 
 
 class TourOfferSerializer(serializers.ModelSerializer):
