@@ -114,10 +114,12 @@ class TourOffer(BaseModel):
         REJECTED = "rejected"
 
     tour_form = models.OneToOneField(TourForm, on_delete=models.CASCADE, verbose_name="Заявка на тур",
-                                  related_name="tour_offer")
+                                     related_name="tour_offer")
     image = ResizedImageField(upload_to="tour_offers", verbose_name="Изображение")
     text = RichTextUploadingField(verbose_name="Текст")
     status = models.CharField(max_length=255, verbose_name="Статус", choices=Status.choices, default=Status.NEW)
+    answered_by = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Ответил", null=True,
+                                    blank=True)
 
     class Meta:
         verbose_name = "Предложение по туру"

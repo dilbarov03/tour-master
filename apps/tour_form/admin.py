@@ -1,6 +1,8 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin, ExportActionMixin, ExportMixin
 
 from .models import TourType, Country, City, TourPeople, TourOffer, TourForm
+from .resources import TourFormResource
 
 
 class CountryInline(admin.TabularInline):
@@ -37,16 +39,28 @@ class TourPeopleInline(admin.TabularInline):
 
 
 @admin.register(TourForm)
-class TourFormAdmin(admin.ModelAdmin):
+class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
     list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone"]
     list_filter = ["user", "region", "tour_type", "country"]
     list_per_page = 25
     inlines = [TourPeopleInline]
+    readonly_fields = ["answered_at"]
+
+    resource_class = TourFormResource
 
 
 @admin.register(TourOffer)
 class TourOfferAdmin(admin.ModelAdmin):
-    list_display = ["tour_form", "status"]
+    list_display = ["tour_form", "answered_by", "status"]
     list_filter = ["tour_form"]
     list_per_page = 25
     ordering = ["-created_at"]
+    readonly_fields = ["answered_by", "status"]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.answered_by = request.user
+        super().save_model(request, obj, form, change)
+
+    def has_delete_permission(self, request, obj=None):
+        return False

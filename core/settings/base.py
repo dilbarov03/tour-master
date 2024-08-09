@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 
 import environ
+from import_export.formats.base_formats import XLSX
 
 from core.jazzmin_conf import *  # noqa
 
@@ -61,6 +62,7 @@ THIRD_PARTY_APPS = [
     "ckeditor",
     "ckeditor_uploader",
     "django_resized",
+    "import_export",
 ]
 
 REST_FRAMEWORK = {
@@ -333,3 +335,8 @@ DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {"WEBP": ".webp"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 
 OPTIMIZED_IMAGE_METHOD = "pillow"
+
+
+IMPORT_EXPORT_SKIP_ADMIN_EXPORT_UI = True
+IMPORT_EXPORT_SKIP_ADMIN_ACTION_EXPORT_UI = True
+EXPORT_FORMATS = [XLSX]
