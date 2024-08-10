@@ -1,73 +1,120 @@
 import os
-import random
-
-import redis
 from random import randint
-from decouple import config
 import requests
 
-REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
-REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+from django.core.cache import cache
+from dotenv import load_dotenv, set_key
 
-PLAY_MOBILE_URL = config('PLAY_MOBILE_URL')
-PLAY_MOBILE_LOGIN = config('PLAY_MOBILE_LOGIN')
-PLAY_MOBILE_PASSWORD = config('PLAY_MOBILE_PASSWORD')
-redis_connection = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+load_dotenv()
 
 
 def generate_code():
     return randint(100000, 999999)
 
 
+def refresh_token():
+    url = 'https://notify.eskiz.uz/api/auth/refresh'
+
+    current_token = os.getenv("SMS_TOKEN")
+    headers = {
+        "Authorization": f"Bearer {current_token}",
+    }
+
+    response = requests.patch(url, headers=headers)
+
+    if response.status_code == 200:
+        new_token = response.json()['token']
+
+        # Update the .env file with the new token
+        set_key('.env', 'SMS_TOKEN', new_token)
+
+        return new_token
+    else:
+        raise Exception(f"Failed to refresh token, status code: {response.status_code}, response: {response.text}")
+
+
 def send_code(phone_number):
-    if redis_connection.get(phone_number):
+    if cache.get(phone_number):
         return False, "Code already sent"
 
     code = generate_code()
-    send_phone_notification(phone_number, code)
+    send_sms(phone_number, code)
     print(f"Your code for number {phone_number} is {code}")
 
-    redis_connection.set(phone_number, code)
-    redis_connection.expire(phone_number, time=120)
+    cache.set(phone_number, code, timeout=120)
 
     return True, "Code sent successfully"
 
 
 def verify_code_cache(phone_number, code):
-    data = redis_connection.get(phone_number)
-    if not data:
+    stored_code = cache.get(phone_number)
+    if not stored_code:
         return False, "Code expired"
-    stored_code = data.decode('utf-8')
     if stored_code == code:
-        redis_connection.set(f"{phone_number}_verified", "True")
-        redis_connection.expire(f"{phone_number}_verified", time=120)
+        cache.set(f"{phone_number}_verified", "True", timeout=120)
         return True, "Code verified successfully"
     return False, "Code is incorrect"
 
 
 def check_verification_status(phone_number):
-    verified_phone = redis_connection.get(f"{phone_number}_verified")
+    verified_phone = cache.get(f"{phone_number}_verified")
     if not verified_phone:
         return False, "Phone number must be verified first"
-    if verified_phone.decode('utf-8') != "True":
+    if verified_phone != "True":
         return False, "Phone number is not verified"
     return True, "Phone number is verified"
 
 
-def send_phone_notification(phone, code):
-    payload = {
-        "messages": [
-            {
-                "recipient": f"{phone}",
-                "message-id": f"mock_exam_{random.randint(10000, 100000)}",
-                "sms": {
-                    "originator": "Mohirdev",
-                    "content": {
-                        "text": f"Salom! Sizning tasdiqlash kodingiz - {code}\n"
-                    }
-                }
-            }
-        ]
+def send_sms(phone="998972081018", code=111111):
+    url = 'https://notify.eskiz.uz/api/message/sms/send'
+
+    token = os.getenv("SMS_TOKEN")
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
     }
-    response = requests.post(PLAY_MOBILE_URL, json=payload, auth=(PLAY_MOBILE_LOGIN, PLAY_MOBILE_PASSWORD))
-    return response.status_code
+
+    message = f"Maroqli sayohat shartlarini bilish uchun ushbu kodni kiriting: {code}"
+
+    data = {
+        'mobile_phone': phone,
+        'message': message,
+        'from': '4546',
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code == 401:
+        token = refresh_token()
+        headers["Authorization"] = f"Bearer {token}"
+        response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {
+            "error": f"Failed to send SMS, status code: {response.status_code}",
+            "response": response.text
+        }
+
+def eskiz_test():
+    url = 'https://notify.eskiz.uz/api/message/sms/send'
+
+    token = os.getenv("SMS_TOKEN")
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+
+    phone = "998972081018"
+    data = {
+        'mobile_phone': phone,
+        'message': "eskiz test",
+        'from': '4546',
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+    print(response.text)
+    print(response.status_code)
