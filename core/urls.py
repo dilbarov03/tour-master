@@ -16,6 +16,7 @@ urlpatterns = [
     path("api/tour-form/", include("apps.tour_form.urls")),
     path("api/tour-catalog/", include("apps.tour_catalog.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('api/users/', include('apps.users.urls')),
 ]
 
 urlpatterns += swagger_urlpatterns

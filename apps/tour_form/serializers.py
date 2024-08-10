@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import TourType, Country, City, TourPeople, TourForm, TourOffer
+from apps.users.verification import check_verification_status
 from ..common.utils import send_form_message
 
 
@@ -44,10 +45,15 @@ class TourFormSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         tour_people = attrs["tour_people"]
+        phone = attrs["phone"]
         if len(tour_people) == 0:
             raise serializers.ValidationError("At least one person should be in the tour")
         elif len(tour_people) > 15:
             raise serializers.ValidationError("Maximum 15 people can be in the tour")
+        verification_status, message = check_verification_status(phone)
+        if not verification_status:
+            raise serializers.ValidationError("Phone number must be verified first")
+
         return attrs
 
     def create(self, validated_data):

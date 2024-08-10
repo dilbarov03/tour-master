@@ -98,6 +98,7 @@ def send_sms(phone="998972081018", code=111111):
             "response": response.text
         }
 
+
 def eskiz_test():
     url = 'https://notify.eskiz.uz/api/message/sms/send'
 
