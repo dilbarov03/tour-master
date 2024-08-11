@@ -17,3 +17,4 @@ django-import-export[xlsx]
 python-decouple==3.8
 python-dotenv==1.0.1
 websockets==12.0
+channels_redis

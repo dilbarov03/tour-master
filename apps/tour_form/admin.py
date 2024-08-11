@@ -57,7 +57,7 @@ class TourOfferInline(admin.StackedInline):
 
 @admin.register(TourForm)
 class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
-    list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone"]
+    list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone", "has_offer"]
     list_filter = ["user", "region", "tour_type", "country"]
     list_per_page = 25
     inlines = [TourPeopleInline, TourOfferInline]

@@ -90,6 +90,12 @@ class TourForm(BaseModel):
             self.region = self.user.region
         super().save(force_insert, force_update, using, update_fields)
 
+    def has_offer(self):
+        return hasattr(self, "tour_offer")
+
+    has_offer.boolean = True
+    has_offer.short_description = "Есть предложение"
+
 
 class TourPeople(BaseModel):
     tour_form = models.ForeignKey(TourForm, on_delete=models.CASCADE, verbose_name="Заявка на тур",
