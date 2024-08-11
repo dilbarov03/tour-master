@@ -1,4 +1,4 @@
-import django_filters.rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
 from .models import Tour, TourCategory, UserBooking
@@ -13,7 +13,7 @@ class TourCategoryListAPIView(generics.ListAPIView):
 class TourListAPIView(generics.ListAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourListSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', )
 
 
