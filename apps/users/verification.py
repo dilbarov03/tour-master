@@ -38,12 +38,12 @@ def send_code(phone_number):
         return False, "Code already sent"
 
     code = generate_code()
-    send_sms(phone_number, code)
+    # send_sms(phone_number, code)
     print(f"Your code for number {phone_number} is {code}")
 
     cache.set(phone_number, code, timeout=120)
 
-    return True, "Code sent successfully"
+    return True, f"Code sent successfully. Code: {code}"
 
 
 def verify_code_cache(phone_number, code):

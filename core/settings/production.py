@@ -4,7 +4,7 @@ from .base import *  # noqa
 # General
 ###################################################################
 
-DEBUG = False
+DEBUG = True
 
 ###################################################################
 # Django security
@@ -15,8 +15,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-    "https://example.com"
+    "https://63f7-62-169-31-254.ngrok-free.app/"
 ]
+
 
 ###################################################################
 # CORS

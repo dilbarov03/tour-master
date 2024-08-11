@@ -4,7 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 from .models import TourType, Country, City, TourOffer
-from .serializers import TourTypeSerializer, TourFormSerializer, TourOfferSerializer
+from .serializers import TourTypeSerializer, TourFormSerializer, TourOfferSerializer, CountrySerializer
 
 
 class TourTypeListAPIView(generics.ListAPIView):
@@ -13,7 +13,7 @@ class TourTypeListAPIView(generics.ListAPIView):
 
 
 class CountryListAPIView(generics.ListAPIView):
-    serializer_class = TourTypeSerializer
+    serializer_class = CountrySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ("tour_type",)
 
