@@ -45,16 +45,14 @@ class TourOfferInline(admin.StackedInline):
     extra = 0
     readonly_fields = ["answered_by", "status"]
 
-    def save_new_objects(self, request, form, inline_formset):
-        new_objects = []
+    def save_new_object(self, request, form, inline_formset):
         for form in inline_formset.forms:
             if form.instance.pk is None:
                 form.instance.answered_by = request.user
-                new_objects.append(form.instance)
-        return new_objects
+        return form.instance
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 
 @admin.register(TourForm)
@@ -67,20 +65,14 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
     resource_class = TourFormResource
 
     def save_formset(self, request, form, formset, change):
-        new_objects = []
         if formset.model == TourOffer:
-            for inline_form in formset.forms:
-                obj = inline_form.save(commit=False)
-                if not obj.pk:  # New object, not yet saved
-                    obj.answered_by = request.user
-                    obj.save()  # Save to the database
-                    new_objects.append(obj)
+            inline_form = formset.forms[0]
+            obj = inline_form.save(commit=False)
+            if not obj.pk:  # New object, not yet saved
+                obj.answered_by = request.user
+                obj.save()  # Save to the database
 
-        # Save the rest of the formset
-        formset.save()
-
-        # Send notification for each new TourOffer object
-        for obj in new_objects:
+            # Send notification for the new TourOffer object
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"user_{obj.tour_form.user.id}",
@@ -91,6 +83,8 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
                 }
             )
 
+        # Save the formset
+        formset.save()
 
 @admin.register(TourOffer)
 class TourOfferAdmin(admin.ModelAdmin):
