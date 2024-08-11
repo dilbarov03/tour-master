@@ -31,6 +31,11 @@ class TourPeopleSerializer(serializers.ModelSerializer):
         fields = ("id", "full_name", "birth_date", "gender")
 
 
+class TypeCountryCitySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+
+
 class TourFormSerializer(serializers.ModelSerializer):
     tour_people = TourPeopleSerializer(many=True)
     has_answered = serializers.SerializerMethodField()
@@ -75,6 +80,12 @@ class TourFormSerializer(serializers.ModelSerializer):
         person = obj.tour_people.first()
         return person.full_name if person else ""
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["tour_type"] = TypeCountryCitySerializer(instance.tour_type).data
+        data["country"] = TypeCountryCitySerializer(instance.country).data
+        data["city"] = TypeCountryCitySerializer(instance.city).data
+        return data
 
 class TourOfferSerializer(serializers.ModelSerializer):
     class Meta:
