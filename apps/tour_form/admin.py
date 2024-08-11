@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin, ExportActionMixin, ExportMixin
 
@@ -60,7 +62,19 @@ class TourOfferAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             obj.answered_by = request.user
+
+            # Send a notification to the user
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{obj.tour_form.user.id}",  # Group name, based on user's ID
+                {
+                    "type": "notify",  # Method name that will be handled in the consumer
+                    "event": "New Tour Offer",
+                    "message": f"A new tour offer has been created by {request.user.id}"
+                }
+            )
+
         super().save_model(request, obj, form, change)
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False

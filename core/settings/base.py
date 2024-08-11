@@ -38,7 +38,9 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 DJANGO_APPS = [
+    "daphne",
     "jazzmin",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -92,6 +94,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "core.urls"
+
+# settings.py
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+ASGI_APPLICATION = 'core.asgi.application'
+
 
 TEMPLATES = [
     {
@@ -340,3 +356,7 @@ OPTIMIZED_IMAGE_METHOD = "pillow"
 IMPORT_EXPORT_SKIP_ADMIN_EXPORT_UI = True
 IMPORT_EXPORT_SKIP_ADMIN_ACTION_EXPORT_UI = True
 EXPORT_FORMATS = [XLSX]
+
+# settings.py
+
+CSP_CONNECT_SRC = ["'self'", "ws://localhost:8000"]

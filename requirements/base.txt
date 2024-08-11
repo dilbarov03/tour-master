@@ -1,4 +1,5 @@
-django==4.0.6
+channels[daphne]
+django==4.2
 psycopg2-binary
 python-environ
 django-cors-headers
@@ -15,3 +16,4 @@ django-import-export==4.1.1
 django-import-export[xlsx]
 python-decouple==3.8
 python-dotenv==1.0.1
+websockets==12.0

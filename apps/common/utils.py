@@ -3,6 +3,9 @@ from pathlib import Path
 
 import environ
 import requests
+import asyncio
+import websockets
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
@@ -43,3 +46,14 @@ def send_form_message(form):
 
     send_telegram_message(text)
     return
+
+
+async def listen():
+    uri = "ws://localhost:8000/ws/notifications/1/"  # replace with your user_id
+    async with websockets.connect(uri) as websocket:
+        print(f"Connected to {uri}")
+        while True:
+            message = await websocket.recv()
+            print(f"< {message}")
+
+asyncio.run(listen())
