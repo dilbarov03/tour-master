@@ -48,6 +48,8 @@ def send_code(phone_number):
 
 def verify_code_cache(phone_number, code):
     stored_code = cache.get(phone_number)
+    print(stored_code, code)
+    print(type(stored_code), type(code))
     if not stored_code:
         return False, "Code expired"
     if stored_code == code:

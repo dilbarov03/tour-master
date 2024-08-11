@@ -23,4 +23,4 @@ class SendCodeSerializer(serializers.Serializer):
 
 class VerifyCodeSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
-    code = serializers.CharField(required=True)
+    code = serializers.IntegerField(required=True)
