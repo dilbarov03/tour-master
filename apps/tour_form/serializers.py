@@ -25,7 +25,7 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "cities")
 
     def get_cities(self, obj):
-        cities = City.objects.filter(country=obj, is_active=True)
+        cities = obj.cities.filter(is_active=True)
         return CitySerializer(cities, many=True).data
 
 

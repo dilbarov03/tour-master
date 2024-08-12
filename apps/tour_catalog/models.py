@@ -53,7 +53,7 @@ class TourPrice(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     people_count = models.PositiveIntegerField(verbose_name='Количество человек')
 
-    objects = TourPriceManager()
+    # objects = TourPriceManager()
 
     class Meta:
         verbose_name = 'Цена на тур'
