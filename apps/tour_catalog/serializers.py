@@ -30,7 +30,7 @@ class TourDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'description', 'prices')
 
     def get_prices(self, obj):
-        prices = TourPrice.objects.filter(tour=obj)
+        prices = TourPrice.objects.filter(tour=obj, people_count__gt=0)
         serializer = TourPriceSerializer(prices, many=True)
         return serializer.data
 
