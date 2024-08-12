@@ -31,8 +31,9 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'region')
     list_display_links = ('id', 'name')
+    list_filter = ('region',)
     search_fields = ('name',)
     list_per_page = 25
 
