@@ -23,11 +23,16 @@ class TourPriceSerializer(serializers.ModelSerializer):
 
 
 class TourDetailSerializer(serializers.ModelSerializer):
-    prices = TourPriceSerializer(many=True, read_only=True)
+    prices = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
         fields = ('id', 'name', 'image', 'description', 'prices')
+
+    def get_prices(self, obj):
+        prices = TourPrice.objects.filter(tour=obj)
+        serializer = TourPriceSerializer(prices, many=True)
+        return serializer.data
 
 
 class UserBookingPriceSerializer(serializers.ModelSerializer):
