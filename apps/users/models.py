@@ -34,8 +34,8 @@ class User(AbstractUser, BaseModel):
 
     full_name = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=15, unique=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     user_type = models.CharField(max_length=10, choices=UserType.choices, default=UserType.CLIENT)
 
     username = None
