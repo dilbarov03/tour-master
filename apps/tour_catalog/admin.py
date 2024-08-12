@@ -32,6 +32,6 @@ class UserBookingPriceInline(admin.TabularInline):
 @admin.register(UserBooking)
 class UserBookingAdmin(admin.ModelAdmin):
     inlines = [UserBookingPriceInline]
-    list_display = ('id', 'tour', 'user', 'full_name', 'total_price')
-    list_filter = ('tour', 'user')
+    list_display = ('id', 'tour', 'user', 'full_name', 'region', 'total_price')
+    list_filter = ('tour', 'user', 'region')
     search_fields = ('tour', 'user')
