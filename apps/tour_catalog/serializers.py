@@ -23,7 +23,7 @@ class TourPriceSerializer(serializers.ModelSerializer):
 
 
 class TourDetailSerializer(serializers.ModelSerializer):
-    prices = TourPriceSerializer(many=True)
+    prices = TourPriceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Tour

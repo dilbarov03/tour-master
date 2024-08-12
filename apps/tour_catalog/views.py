@@ -21,6 +21,9 @@ class TourDetailAPIView(generics.RetrieveAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourDetailSerializer
 
+    def get_queryset(self):
+        return Tour.objects.prefetch_related('prices').all()
+
 
 class UserBookingCreateAPIView(generics.CreateAPIView):
     queryset = UserBooking.objects.all()
