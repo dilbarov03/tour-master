@@ -18,7 +18,7 @@ class CountryListAPIView(generics.ListAPIView):
     filterset_fields = ("tour_type",)
 
     def get_queryset(self):
-        return Country.objects.prefetch_related("cities").all()
+        return Country.objects.all().prefetch_related("cities")
 
 
 class TourFormListCreateAPIView(generics.ListCreateAPIView):

@@ -13,9 +13,11 @@ DEBUG = True
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
-    "https://63f7-62-169-31-254.ngrok-free.app/"
+    "https://63f7-62-169-31-254.ngrok-free.app/",
+    "http://62.169.31.254/"
 ]
 
 
@@ -26,7 +28,5 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ["*"]
-CORS_URLS_REGEX = r'^/media/.*$'
 
-X_FRAME_OPTIONS = 'SAMEORIGIN'
-SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+

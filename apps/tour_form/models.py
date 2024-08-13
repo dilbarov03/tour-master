@@ -48,8 +48,6 @@ class City(BaseModel):
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
 
-    objects = ActiveManager()
-
     class Meta:
         verbose_name = "Город"
         verbose_name_plural = "Города"

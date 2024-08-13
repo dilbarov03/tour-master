@@ -79,7 +79,7 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
                 {
                     "type": "notify",
                     "event": "New Tour Offer",
-                    "message": f"A new tour offer has been created by {request.user.id}"
+                    "message": f"A new tour offer has been created. Tour form id: {obj.tour_form.id}"
                 }
             )
 

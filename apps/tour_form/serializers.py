@@ -18,11 +18,15 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class CountrySerializer(serializers.ModelSerializer):
-    cities = CitySerializer(many=True)
+    cities = serializers.SerializerMethodField()
 
     class Meta:
         model = Country
         fields = ("id", "name", "cities")
+
+    def get_cities(self, obj):
+        cities = obj.cities.filter(is_active=True)
+        return CitySerializer(cities, many=True).data
 
 
 class TourPeopleSerializer(serializers.ModelSerializer):

@@ -53,7 +53,7 @@ class TourPrice(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     people_count = models.PositiveIntegerField(verbose_name='Количество человек')
 
-    objects = TourPriceManager()
+    # objects = TourPriceManager()
 
     class Meta:
         verbose_name = 'Цена на тур'
@@ -73,6 +73,8 @@ class UserBooking(BaseModel):
     phone = models.CharField(max_length=20, verbose_name='Телефон', null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Общая стоимость',
                                       null=True, blank=True)
+    region = models.ForeignKey('users.Region', on_delete=models.CASCADE, verbose_name='Регион',
+                                 related_name='bookings', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Бронирование'

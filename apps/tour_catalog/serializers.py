@@ -23,11 +23,16 @@ class TourPriceSerializer(serializers.ModelSerializer):
 
 
 class TourDetailSerializer(serializers.ModelSerializer):
-    prices = TourPriceSerializer(many=True)
+    prices = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
         fields = ('id', 'name', 'image', 'description', 'prices')
+
+    def get_prices(self, obj):
+        prices = obj.prices.filter(people_count__gt=0)
+        serializer = TourPriceSerializer(prices, many=True)
+        return serializer.data
 
 
 class UserBookingPriceSerializer(serializers.ModelSerializer):
@@ -52,13 +57,15 @@ class UserBookingSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tour_prices_data = validated_data.pop('tour_prices')
-        booking = UserBooking.objects.create(user=self.context['request'].user, **validated_data)
+        user = self.context['request'].user
+        booking = UserBooking.objects.create(user, **validated_data)
 
         total_price = 0
         for tour_price_data in tour_prices_data:
             user_booking_price = UserBookingPrice.objects.create(user_booking=booking, **tour_price_data)
             total_price += user_booking_price.total_price
 
+        booking.region = user.region
         booking.total_price = total_price
         booking.save()
 
