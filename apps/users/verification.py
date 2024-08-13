@@ -38,12 +38,12 @@ def send_code(phone_number):
         return False, "Code already sent"
 
     code = generate_code()
-    # send_sms(phone_number, code)
+    send_sms(phone_number, code)
     print(f"Your code for number {phone_number} is {code}")
 
     cache.set(phone_number, code, timeout=120)
 
-    return True, f"Code sent successfully. Code: {code}"
+    return True, f"Code sent successfully"
 
 
 def verify_code_cache(phone_number, code):
@@ -68,7 +68,7 @@ def check_verification_status(phone_number):
 
 
 def send_sms(phone="998972081018", code=111111):
-    url = 'https://notify.eskiz.uz/api/message/sms/send'
+    url = 'https://notify.eskiz.uz/api/message/sms/send/'
 
     token = os.getenv("SMS_TOKEN")
 
@@ -77,7 +77,7 @@ def send_sms(phone="998972081018", code=111111):
         "Content-Type": "application/json"
     }
 
-    message = f"Maroqli sayohat shartlarini bilish uchun ushbu kodni kiriting: {code}"
+    message = f"Travel-savol.uz saytidagi buyurtmani tasdiqlash uchun kod: {code}"
 
     data = {
         'mobile_phone': phone,
@@ -85,7 +85,7 @@ def send_sms(phone="998972081018", code=111111):
         'from': '4546',
     }
 
-    response = requests.post(url, headers=headers, data=data)
+    response = requests.post(url, headers=headers, json=data)
 
     if response.status_code == 401:
         token = refresh_token()
