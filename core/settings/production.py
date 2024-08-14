@@ -13,11 +13,9 @@ DEBUG = True
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-    "https://63f7-62-169-31-254.ngrok-free.app/",
-    "http://62.169.31.254/"
+    "https://miraltour.uz"
 ]
 
 
