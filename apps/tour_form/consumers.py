@@ -27,8 +27,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     # Receive a message from the group
     async def notify(self, event):
         message = event['message']
+        tour_form = event.get('tour_form')
 
         # Send a message to the WebSocket
         await self.send(text_data=json.dumps({
-            'message': message
+            'message': message,
+            'tour_form': tour_form
         }))

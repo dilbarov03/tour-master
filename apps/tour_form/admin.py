@@ -72,16 +72,17 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
                 obj.answered_by = request.user
                 obj.save()  # Save to the database
 
-            # Send notification for the new TourOffer object
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{obj.tour_form.user.id}",
-                {
-                    "type": "notify",
-                    "event": "New Tour Offer",
-                    "message": f"A new tour offer has been created. Tour form id: {obj.tour_form.id}"
-                }
-            )
+                # Send notification for the new TourOffer object
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f"user_{obj.tour_form.user.id}",
+                    {
+                        "type": "notify",
+                        "event": "New Tour Offer",
+                        "message": f"A new tour offer has been created.",
+                        "tour_form": obj.tour_form.id
+                    }
+                )
 
         # Save the formset
         formset.save()
