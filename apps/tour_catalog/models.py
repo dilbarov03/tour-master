@@ -13,8 +13,8 @@ class TourCategory(BaseModel):
     order = models.PositiveIntegerField(default=1, verbose_name='Порядок')
 
     class Meta:
-        verbose_name = 'Категория тура'
-        verbose_name_plural = 'Категории туров'
+        verbose_name = 'Turpaket kategoriya'
+        verbose_name_plural = 'Turpaket kategoriyalari'
         ordering = ['order']
 
     def __str__(self):
@@ -35,8 +35,8 @@ class Tour(BaseModel):
     objects = TourManager()
 
     class Meta:
-        verbose_name = 'Тур'
-        verbose_name_plural = 'Туры'
+        verbose_name = 'Tur paket'
+        verbose_name_plural = 'Tur paketlar'
 
     def __str__(self):
         return self.name
@@ -77,8 +77,8 @@ class UserBooking(BaseModel):
                                  related_name='bookings', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Бронирование'
-        verbose_name_plural = 'Бронирования'
+        verbose_name = 'Buyurtma'
+        verbose_name_plural = 'Buyurtmalar'
 
     def __str__(self):
         return f'{self.full_name} - {self.tour.name}'

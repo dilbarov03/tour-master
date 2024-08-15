@@ -33,8 +33,8 @@ class Country(BaseModel):
     objects = ActiveManager()
 
     class Meta:
-        verbose_name = "Страна"
-        verbose_name_plural = "Страны"
+        verbose_name = "Davlat va shahar"
+        verbose_name_plural = "Davlatlar va shaharlar"
         ordering = ["order", "name"]
 
     def __str__(self):
@@ -77,8 +77,8 @@ class TourForm(BaseModel):
     answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Ответили")
 
     class Meta:
-        verbose_name = "Заявка на тур"
-        verbose_name_plural = "Заявки на туры"
+        verbose_name = "Buyurtma"
+        verbose_name_plural = "Buyurtmalar"
 
     def __str__(self):
         return f"{self.user} - {self.country.name} - {self.city.name}"
@@ -126,8 +126,8 @@ class TourOffer(BaseModel):
                                     blank=True)
 
     class Meta:
-        verbose_name = "Предложение по туру"
-        verbose_name_plural = "Предложения по турам"
+        verbose_name = "Buyurtma taklif"
+        verbose_name_plural = "Buyurtma qo'shish"
         ordering = ["-created_at"]
 
     def __str__(self):

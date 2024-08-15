@@ -9,8 +9,8 @@ class Region(BaseModel):
     name = models.CharField(max_length=255, verbose_name='Название региона')
 
     class Meta:
-        verbose_name = 'Регион'
-        verbose_name_plural = 'Регионы'
+        verbose_name = 'Hudud'
+        verbose_name_plural = 'Hududlar'
 
     def __str__(self):
         return self.name
@@ -22,8 +22,8 @@ class Branch(BaseModel):
                                null=True)
 
     class Meta:
-        verbose_name = 'Филиал'
-        verbose_name_plural = 'Филиалы'
+        verbose_name = 'Filial'
+        verbose_name_plural = 'Filiallar'
 
     def __str__(self):
         return self.name
@@ -49,8 +49,8 @@ class User(AbstractUser, BaseModel):
 
     class Meta:
         db_table = 'user'
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Foydalanuvchi'
+        verbose_name_plural = 'Sotuvchilar'
 
     def __str__(self):
         return self.full_name or self.phone
