@@ -44,7 +44,6 @@ class TourFormSerializer(serializers.ModelSerializer):
     tour_people = TourPeopleSerializer(many=True)
     has_answered = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
-    full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = TourForm
@@ -79,10 +78,6 @@ class TourFormSerializer(serializers.ModelSerializer):
 
     def get_status(self, obj):
         return obj.tour_offer.status if hasattr(obj, "tour_offer") else "new"
-
-    def get_full_name(self, obj):
-        person = obj.tour_people.first()
-        return person.full_name if person else ""
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

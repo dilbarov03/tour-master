@@ -73,8 +73,10 @@ class TourForm(BaseModel):
     to_date = models.DateField(verbose_name="Дата окончания")
     holidays = models.PositiveIntegerField(verbose_name="Количество дней отдыха")
     phone = models.CharField(max_length=255, verbose_name="Телефон")
+    full_name = models.CharField(max_length=255, verbose_name="ФИО", null=True, blank=True)
     comment = models.TextField(verbose_name="Комментарий", null=True, blank=True)
     answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Ответили")
+    is_bought = models.BooleanField(default=False, verbose_name="Куплено")
 
     class Meta:
         verbose_name = "Buyurtma"
