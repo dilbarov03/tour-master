@@ -15,8 +15,8 @@ class TourType(BaseModel):
     objects = ActiveManager()
 
     class Meta:
-        verbose_name = "Тип тура"
-        verbose_name_plural = "Типы туров"
+        verbose_name = "Sayohat turi"
+        verbose_name_plural = "Sayohat turlari"
         ordering = ["order"]
 
     def __str__(self):
@@ -129,8 +129,8 @@ class TourOffer(BaseModel):
                                     blank=True)
 
     class Meta:
-        verbose_name = "Buyurtma taklif"
-        verbose_name_plural = "Buyurtma qo'shish"
+        verbose_name = "Agentlik taklifi"
+        verbose_name_plural = "Agentlik takliflari"
         ordering = ["-created_at"]
 
     def __str__(self):
