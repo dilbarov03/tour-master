@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from rest_framework.filters import OrderingFilter
 
 from .models import Tour, TourCategory, UserBooking
 from .serializers import TourCategorySerializer, TourListSerializer, TourDetailSerializer, UserBookingSerializer
@@ -15,6 +16,15 @@ class TourListAPIView(generics.ListAPIView):
     serializer_class = TourListSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', )
+
+
+class TourListNewAPIView(generics.ListAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = TourListSerializer
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    filterset_fields = ('category', )
+    pagination_class = None
+    ordering = ('start_date', )
 
 
 class TourDetailAPIView(generics.RetrieveAPIView):
