@@ -58,7 +58,7 @@ class UserBookingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         tour_prices_data = validated_data.pop('tour_prices')
         user = self.context['request'].user
-        booking = UserBooking.objects.create(user, **validated_data)
+        booking = UserBooking.objects.create(user=user, **validated_data)
 
         total_price = 0
         for tour_price_data in tour_prices_data:
