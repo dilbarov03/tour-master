@@ -42,11 +42,6 @@ class Tour(BaseModel):
     def __str__(self):
         return self.name
 
-    # @property
-    # def min_price(self):
-    #     min_price = self.prices.all().aggregate(Min('price'))['price__min']
-    #     return min_price
-
 
 class TourPrice(BaseModel):
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, verbose_name='Тур', related_name='prices')
@@ -101,8 +96,8 @@ class UserBookingPrice(BaseModel):
     def __str__(self):
         return f'{self.user_booking.full_name} - {self.tour_price.tour.name} - {self.tour_price.name} - {self.count}'
 
-    def save(self, *args, **kwargs):
-        self.total_price = self.tour_price.price * self.count
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.total_price = self.tour_price.price * self.count
+    #     super().save(*args, **kwargs)
 
 

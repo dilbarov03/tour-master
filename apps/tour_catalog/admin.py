@@ -1,6 +1,8 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin, ExportActionMixin
 
 from .models import Tour, TourCategory, TourPrice, UserBooking, UserBookingPrice
+from .resources import UserBookingResource
 
 
 class TourPriceInline(admin.TabularInline):
@@ -30,8 +32,9 @@ class UserBookingPriceInline(admin.TabularInline):
 
 
 @admin.register(UserBooking)
-class UserBookingAdmin(admin.ModelAdmin):
+class UserBookingAdmin(ImportExportModelAdmin, ExportActionMixin):
     inlines = [UserBookingPriceInline]
     list_display = ('id', 'tour', 'user', 'full_name', 'region', 'total_price')
     list_filter = ('tour', 'user', 'region')
     search_fields = ('tour', 'user')
+    resource_class = UserBookingResource
