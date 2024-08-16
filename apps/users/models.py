@@ -20,6 +20,7 @@ class Branch(BaseModel):
     name = models.CharField(max_length=255, verbose_name='Название филиала')
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='Регион', related_name='branches',
                                null=True)
+    coefficient = models.FloatField(default=0, verbose_name='Коэффициент')
 
     class Meta:
         verbose_name = 'Filial'

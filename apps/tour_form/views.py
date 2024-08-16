@@ -10,12 +10,14 @@ from .serializers import TourTypeSerializer, TourFormSerializer, TourOfferSerial
 class TourTypeListAPIView(generics.ListAPIView):
     queryset = TourType.objects.all()
     serializer_class = TourTypeSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class CountryListAPIView(generics.ListAPIView):
     serializer_class = CountrySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ("tour_type",)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Country.objects.all().prefetch_related("cities")

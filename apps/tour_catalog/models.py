@@ -42,10 +42,10 @@ class Tour(BaseModel):
     def __str__(self):
         return self.name
 
-    @property
-    def min_price(self):
-        min_price = self.prices.all().aggregate(Min('price'))['price__min']
-        return min_price
+    # @property
+    # def min_price(self):
+    #     min_price = self.prices.all().aggregate(Min('price'))['price__min']
+    #     return min_price
 
 
 class TourPrice(BaseModel):
@@ -63,6 +63,7 @@ class TourPrice(BaseModel):
 
     def __str__(self):
         return f'{self.tour.name} - {self.name} - {self.price}'
+
 
 
 class UserBooking(BaseModel):
