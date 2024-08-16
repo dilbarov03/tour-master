@@ -9,11 +9,12 @@ class TourFormResource(resources.ModelResource):
     status = fields.Field(column_name='Статус', attribute='status')
     answered_by = fields.Field(column_name='Менеджер', attribute='answered_by')
     answered_at = fields.Field(column_name='Ответили', attribute='answered_at')
+    is_bought = fields.Field(column_name='Куплено', attribute='is_bought')
 
     class Meta:
         model = TourForm
-        fields = ('id', 'user', 'region__name', 'tour_type__name', 'country__name', 'city__name', 'from_date', 'to_date', 'room_count',
-                  'holidays', 'phone', 'people_count', 'status', 'created_at', 'answered_at', 'answered_by')
+        fields = ('id', 'user', 'full_name', 'region__name', 'user__branch__name', 'tour_offer__barcode', 'tour_type__name', 'country__name', 'city__name', 'from_date', 'to_date', 'room_count',
+                  'holidays', 'phone', 'people_count', 'status', 'is_bought', 'created_at', 'answered_at', 'answered_by')
 
     def dehydrate_user(self, tour_form):
         return tour_form.user.get_userinfo()
@@ -33,14 +34,18 @@ class TourFormResource(resources.ModelResource):
             return time_difference.total_seconds() // 60
         return "Не отвечено"
 
+    def dehydrate_is_bought(self, tour_form):
+        if tour_form.is_bought:
+            return "Да"
+        return "Нет"
 
     def export(self, queryset=None, **kwargs):
         dataset = super().export(queryset=queryset, **kwargs)
 
         dataset.headers = [
-            'ID', 'Пользователь', 'Регион', 'Тип тура', 'Страна', 'Город', 'Дата начала', 'Дата окончания',
-            'Количество комнат', 'Количество дней отдыха', 'Телефон', 'Количество человек', 'Статус', 'Создано',
-            'Ответили', 'Менеджер'
+            'ID', 'Кассир', 'Клиент', 'Регион', 'Филиал', 'Штрих код', 'Тип тура', 'Страна', 'Город', 'Дата начала', 'Дата окончания',
+            'Количество комнат', 'Количество дней отдыха', 'Телефон', 'Количество человек', 'Статус', 'Куплено',
+            'Создано', 'Ответили', 'Менеджер'
         ]
 
         return dataset

@@ -57,8 +57,9 @@ class TourOfferInline(admin.StackedInline):
 
 @admin.register(TourForm)
 class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
-    list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone", "has_offer"]
-    list_filter = ["user", "region", "tour_type", "country"]
+    list_display = ["id", "user", "region", "tour_type", "country", "from_date", "to_date", "phone", "has_offer",
+                    "is_bought"]
+    list_filter = ["user", "region", "tour_type", "country", "is_bought"]
     list_per_page = 25
     inlines = [TourPeopleInline, TourOfferInline]
     readonly_fields = ["answered_at", ]
@@ -114,5 +115,5 @@ class TourOfferAdmin(admin.ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_delete_permission(self, request, obj=None):
+        return False

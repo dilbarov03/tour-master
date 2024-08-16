@@ -30,6 +30,7 @@ class Tour(BaseModel):
     start_date = models.DateField(verbose_name='Дата начала')
     days_count = models.PositiveIntegerField(verbose_name='Количество дней')
     people_count = models.PositiveIntegerField(verbose_name='Количество человек')
+    barcode = models.CharField(max_length=255, verbose_name='Штрихкод', null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name='Активно')
 
     objects = TourManager()
