@@ -51,8 +51,8 @@ class TourOfferInline(admin.StackedInline):
                 form.instance.answered_by = request.user
         return form.instance
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 
 @admin.register(TourForm)
@@ -87,33 +87,3 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
 
         # Save the formset
         formset.save()
-
-
-@admin.register(TourOffer)
-class TourOfferAdmin(admin.ModelAdmin):
-    list_display = ["tour_form", "answered_by", "status"]
-    list_filter = ["tour_form"]
-    list_per_page = 25
-    ordering = ["-created_at"]
-    readonly_fields = ["answered_by", "status"]
-
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.answered_by = request.user
-
-            # Send notification for the new TourOffer object
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"user_{obj.tour_form.user.id}",
-                {
-                    "type": "notify",
-                    "event": "New Tour Offer",
-                    "message": f"A new tour offer has been created.",
-                    "tour_form": obj.tour_form.id
-                }
-            )
-
-        super().save_model(request, obj, form, change)
-
-    def has_delete_permission(self, request, obj=None):
-        return False
