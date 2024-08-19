@@ -6,7 +6,7 @@ from apps.users.managers import CustomUserManager
 
 
 class Region(BaseModel):
-    name = models.CharField(max_length=255, verbose_name='Название региона')
+    name = models.CharField(max_length=255, verbose_name='Hudud nomi')
 
     class Meta:
         verbose_name = 'Hudud'
@@ -17,10 +17,10 @@ class Region(BaseModel):
 
 
 class Branch(BaseModel):
-    name = models.CharField(max_length=255, verbose_name='Название филиала')
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='Регион', related_name='branches',
+    name = models.CharField(max_length=255, verbose_name='Filial nomi')
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='Hudud', related_name='branches',
                                null=True)
-    coefficient = models.FloatField(default=0, verbose_name='Коэффициент')
+    coefficient = models.FloatField(default=0, verbose_name='Koefitsient')
 
     class Meta:
         verbose_name = 'Filial'
@@ -32,14 +32,15 @@ class Branch(BaseModel):
 
 class User(AbstractUser, BaseModel):
     class UserType(models.TextChoices):
-        ADMIN = 'admin', 'Администратор'
-        CLIENT = 'client', 'Клиент'
+        ADMIN = 'admin', 'Administrator'
+        CLIENT = 'client', 'Mijoz'
 
-    full_name = models.CharField(max_length=255, null=True, blank=True)
-    phone = models.CharField(max_length=15, unique=True)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
-    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
-    user_type = models.CharField(max_length=10, choices=UserType.choices, default=UserType.CLIENT)
+    full_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='F.I.O.')
+    phone = models.CharField(max_length=15, unique=True, verbose_name='Telefon')
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, verbose_name='Hudud')
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Filial')
+    user_type = models.CharField(max_length=10, choices=UserType.choices, default=UserType.CLIENT,
+                                 verbose_name='Foydalanuvchi turi')
 
     username = None
 
