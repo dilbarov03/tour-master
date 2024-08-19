@@ -33,7 +33,9 @@ class TourListNewAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Tour.objects.filter(is_active=True).annotate(
+        return Tour.objects.filter(is_active=True).filter(
+            is_active=True, category__is_active=True, start_date__gte=timezone.now().date(),
+            people_count__gt=0).annotate(
             min_price=Min('prices__price') * (1 + Decimal(self.request.user.branch.coefficient) / 100)
             if self.request.user.branch else Min('prices__price')
         )

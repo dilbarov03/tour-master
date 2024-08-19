@@ -8,9 +8,9 @@ from apps.tour_form.managers import ActiveManager
 
 
 class TourType(BaseModel):
-    name = models.CharField(max_length=255, verbose_name="Название")
-    is_active = models.BooleanField(default=True, verbose_name="Активный")
-    order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
+    name = models.CharField(max_length=255, verbose_name="Nomi")
+    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=1, verbose_name="Tartib")
 
     objects = ActiveManager()
 
@@ -24,11 +24,11 @@ class TourType(BaseModel):
 
 
 class Country(BaseModel):
-    name = models.CharField(max_length=255, verbose_name="Название")
-    tour_type = models.ForeignKey(TourType, on_delete=models.CASCADE, verbose_name="Тип тура",
+    name = models.CharField(max_length=255, verbose_name="Nomi")
+    tour_type = models.ForeignKey(TourType, on_delete=models.CASCADE, verbose_name="Sayohat turi",
                                   related_name="countries")
-    is_active = models.BooleanField(default=True, verbose_name="Активный")
-    order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=1, verbose_name="Tartib")
 
     objects = ActiveManager()
 
@@ -42,15 +42,15 @@ class Country(BaseModel):
 
 
 class City(BaseModel):
-    name = models.CharField(max_length=255, verbose_name="Название")
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Страна",
+    name = models.CharField(max_length=255, verbose_name="Nomi")
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Davlat",
                                 related_name="cities")
-    is_active = models.BooleanField(default=True, verbose_name="Активный")
-    order = models.PositiveIntegerField(default=1, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=1, verbose_name="Tartib")
 
     class Meta:
-        verbose_name = "Город"
-        verbose_name_plural = "Города"
+        verbose_name = "Shahar"
+        verbose_name_plural = "Shaharlar"
         ordering = ["order", "name"]
 
     def __str__(self):
@@ -58,25 +58,25 @@ class City(BaseModel):
 
 
 class TourForm(BaseModel):
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Пользователь",
-                             related_name="tour_forms")
-    region = models.ForeignKey("users.Region", on_delete=models.CASCADE, verbose_name="Регион",
-                               related_name="tour_forms", null=True)
-    tour_type = models.ForeignKey(TourType, on_delete=models.CASCADE, verbose_name="Тип тура",
-                                  related_name="tour_forms")
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Страна",
-                                related_name="tour_forms")
-    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="Город",
-                             related_name="tour_forms")
-    room_count = models.PositiveIntegerField(verbose_name="Количество комнат", default=0)
-    from_date = models.DateField(verbose_name="Дата начала")
-    to_date = models.DateField(verbose_name="Дата окончания")
-    holidays = models.PositiveIntegerField(verbose_name="Количество дней отдыха")
-    phone = models.CharField(max_length=255, verbose_name="Телефон")
-    full_name = models.CharField(max_length=255, verbose_name="ФИО", null=True, blank=True)
-    comment = models.TextField(verbose_name="Комментарий", null=True, blank=True)
-    answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Ответили")
-    is_bought = models.BooleanField(default=False, verbose_name="Куплено")
+    user = models.ForeignKey("users.User", on_delete=models.SET_NULL, verbose_name="Sotuvchi",
+                             related_name="tour_forms", null=True, blank=True)
+    region = models.ForeignKey("users.Region", on_delete=models.SET_NULL, verbose_name="Hudud",
+                               related_name="tour_forms", null=True, blank=True)
+    tour_type = models.ForeignKey(TourType, on_delete=models.SET_NULL, verbose_name="Sayohat turi",
+                                  related_name="tour_forms", null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, verbose_name="Davlat",
+                                related_name="tour_forms", null=True, blank=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, verbose_name="Shahar",
+                             related_name="tour_forms", null=True, blank=True)
+    room_count = models.PositiveIntegerField(verbose_name="Xonalar soni", default=0)
+    from_date = models.DateField(verbose_name="Boshlanish sanasi")
+    to_date = models.DateField(verbose_name="Tugash sanasi")
+    holidays = models.PositiveIntegerField(verbose_name="Dam olish kunlari soni")
+    phone = models.CharField(max_length=255, verbose_name="Telefon")
+    full_name = models.CharField(max_length=255, verbose_name="F.I.O", null=True, blank=True)
+    comment = models.TextField(verbose_name="Izoh", null=True, blank=True)
+    answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Javob berilgan vaqti")
+    is_bought = models.BooleanField(default=False, verbose_name="Sotib olingan")
 
     class Meta:
         verbose_name = "Buyurtma"
@@ -94,19 +94,19 @@ class TourForm(BaseModel):
         return hasattr(self, "tour_offer")
 
     has_offer.boolean = True
-    has_offer.short_description = "Есть предложение"
+    has_offer.short_description = "Taklif mavjud"
 
 
 class TourPeople(BaseModel):
-    tour_form = models.ForeignKey(TourForm, on_delete=models.CASCADE, verbose_name="Заявка на тур",
+    tour_form = models.ForeignKey(TourForm, on_delete=models.CASCADE, verbose_name="Tur buyurtmasi",
                                   related_name="tour_people")
-    full_name = models.CharField(max_length=255, verbose_name="ФИО")
-    birth_date = models.DateField(verbose_name="Дата рождения")
-    gender = models.CharField(max_length=15, verbose_name="Пол")
+    full_name = models.CharField(max_length=255, verbose_name="F.I.O")
+    birth_date = models.DateField(verbose_name="Tug'ilgan sanasi")
+    gender = models.CharField(max_length=15, verbose_name="Jinsi")
 
     class Meta:
-        verbose_name = "Человек в заявке"
-        verbose_name_plural = "Люди в заявке"
+        verbose_name = "Buyurtmadagi shaxs"
+        verbose_name_plural = "Buyurtmadagi shaxslar"
 
     def __str__(self):
         return self.full_name
@@ -119,13 +119,13 @@ class TourOffer(BaseModel):
         ACCEPTED = "accepted"
         REJECTED = "rejected"
 
-    tour_form = models.OneToOneField(TourForm, on_delete=models.CASCADE, verbose_name="Заявка на тур",
+    tour_form = models.OneToOneField(TourForm, on_delete=models.CASCADE, verbose_name="Tur buyurtmasi",
                                      related_name="tour_offer")
-    image = ResizedImageField(upload_to="tour_offers", verbose_name="Изображение")
-    text = RichTextUploadingField(verbose_name="Текст")
-    status = models.CharField(max_length=255, verbose_name="Статус", choices=Status.choices, default=Status.NEW)
-    barcode = models.CharField(max_length=255, verbose_name='Штрихкод', null=True, blank=True)
-    answered_by = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Ответил", null=True,
+    image = ResizedImageField(upload_to="tour_offers", verbose_name="Rasm")
+    text = RichTextUploadingField(verbose_name="Matn")
+    status = models.CharField(max_length=255, verbose_name="Status", choices=Status.choices, default=Status.NEW)
+    barcode = models.CharField(max_length=255, verbose_name='Shtrixkod', null=True, blank=True)
+    answered_by = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Javob berilgan", null=True,
                                     blank=True)
 
     class Meta:
