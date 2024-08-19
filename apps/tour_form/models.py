@@ -93,6 +93,11 @@ class TourForm(BaseModel):
     def has_offer(self):
         return hasattr(self, "tour_offer")
 
+    def get_people(self):
+        if hasattr(self, "tour_people"):
+            return ", ".join([person.full_name for person in self.tour_people.all()])
+        return "Yo'q"
+
     has_offer.boolean = True
     has_offer.short_description = "Taklif mavjud"
 

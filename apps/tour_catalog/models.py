@@ -67,6 +67,7 @@ class UserBooking(BaseModel):
                                       null=True, blank=True)
     region = models.ForeignKey('users.Region', on_delete=models.SET_NULL, verbose_name='Hudud',
                                related_name='bookings', null=True, blank=True)
+    is_bought = models.BooleanField(default=False, verbose_name='Sotildi')
 
     class Meta:
         verbose_name = 'Buyurtma'

@@ -5,7 +5,7 @@ import environ
 import requests
 import asyncio
 import websockets
-
+from openpyxl.styles.builtins import output
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
@@ -24,25 +24,37 @@ def send_telegram_message(text="Text"):
 
 
 def send_booking_message(booking):
-    text = f'<b>Бронирование тура -</b> {booking.tour.name}\n\n'
-    text += f'<b>ФИО:</b> {booking.full_name}\n'
-    text += f'<b>Телефон:</b> {booking.phone}\n'
-    text += f'<b>Username в Telegram:</b> {booking.tg_username}\n'
-    text += f'<b>Общая стоимость:</b> {booking.total_price}\n\n'
-    text += f'<b>Ссылка:</b> {BASE_URL}/admin/tour_catalog/userbooking/{booking.id}/change/\ngoogle.com'
+    text = (
+        f"<b>Tayyor tur paketlar</b>\n\n"
+        f"<b>Zayavka ID:</b> {booking.id}\n"
+        f"<b>Jo'nab ketish davri:</b> {booking.tour.start_date}\n"
+        f"<b>Sayohatchilar soni:</b> {booking.tour.people_count}\n"
+        f"<b>Mijoz FISH:</b> {booking.full_name}\n"
+        f"<b>Mijoz telefon raqami:</b> {booking.phone}\n"
+        f"<b>Mijoz telegram niki:</b> {booking.tg_username}\n"
+        f"<b>Sotuvchi:</b> {booking.user.full_name}\n\n"
+        f"<b>Link:</b> {BASE_URL}/admin/tour_catalog/userbooking/{booking.id}/change/\n"
+    )
+
 
     send_telegram_message(text)
     return
 
 
 def send_form_message(form):
-    text = f'<b>Новая заявка на тур </b>\n\n'
-    text += f'<b>Тип тура:</b> {form.tour_type.name}\n'
-    text += f'<b>Из региона:</b> {form.region.name if form.region else "Неизвестно"}\n'
-    text += f'<b>Страна:</b> {form.country.name}\n'
-    text += f'<b>Город:</b> {form.city.name}\n\n'
-    text += f'<b>Подробности:</b>\n'
-    text += f'{BASE_URL}/admin/tour_form/tourform/{form.id}/change/\n'
+    text = (
+        f"<b>Teriladigan tur paketlar</b>\n\n"
+        f"<b>Zayavka ID:</b> {form.id}\n"
+        f"<b>Davlati:</b> {form.country.name}\n"
+        f"<b>Shahri:</b> {form.city.name}\n"
+        f"<b>Jo'nab ketish davri:</b> {form.from_date}-{form.to_date}\n"
+        f"<b>Sayohatchilar:</b> {form.get_people()}\n"
+        f"<b>Mijoz FISH:</b> {form.full_name}\n"
+        f"<b>Mijoz telefon raqami:</b> {form.phone}\n"
+        f"<b>Sotuvchi:</b> {form.user.full_name}\n\n"
+        f"<b>Link:</b> {BASE_URL}/admin/tour_form/tourform/{form.id}/change/\n"
+    )
+
 
     send_telegram_message(text)
     return
