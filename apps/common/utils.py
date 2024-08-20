@@ -32,8 +32,8 @@ def send_booking_message(booking):
         f"<b>Mijoz FISH:</b> {booking.full_name}\n"
         f"<b>Mijoz telefon raqami:</b> {booking.phone}\n"
         f"<b>Mijoz telegram niki:</b> {booking.tg_username}\n"
-        f"<b>Hudud:</b> {booking.region.name}\n"
-        f"<b>Filial:</b> {booking.branch.name}\n"
+        f"<b>Hudud:</b> {booking.region.name if booking.region else ''}\n"
+        f"<b>Filial:</b> {booking.branch.name if booking.branch else ''}\n"
         f"<b>Sotuvchi:</b> {booking.user.full_name}\n\n"
         f"<b>Link:</b> {BASE_URL}/admin/tour_catalog/userbooking/{booking.id}/change/\n"
     )
@@ -53,8 +53,8 @@ def send_form_message(form):
         f"<b>Sayohatchilar:</b> {form.get_people()}\n"
         f"<b>Mijoz FISH:</b> {form.full_name}\n"
         f"<b>Mijoz telefon raqami:</b> {form.phone}\n"
-        f"<b>Hudud:</b> {form.region.name}\n"
-        f"<b>Filial:</b> {form.branch.name}\n"
+        f"<b>Hudud:</b> {form.region.name if form.region else ''}\n"
+        f"<b>Filial:</b> {form.branch.name if form.branch else ''}\n"
         f"<b>Sotuvchi:</b> {form.user.full_name}\n\n"
         f"<b>Link:</b> {BASE_URL}/admin/tour_form/tourform/{form.id}/change/\n"
     )
