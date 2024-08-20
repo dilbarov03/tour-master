@@ -8,10 +8,10 @@ from apps.users.models import User, Branch, Region
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
-    list_display = ('id', 'phone', 'full_name', 'phone')
+    list_display = ('id', 'phone', 'full_name', 'branch', 'region', 'user_type')
     list_display_links = ('id', 'phone')
     search_fields = ('phone', 'full_name', 'phone')
-    list_filter = ('is_active', 'is_staff', 'is_superuser')
+    list_filter = ('branch', 'region', 'user_type')
     ordering = ('phone',)
     list_per_page = 25
 
