@@ -23,29 +23,30 @@ class TourFormResource(resources.ModelResource):
         return tour_form.tour_people.count()
 
     def dehydrate_status(self, tour_form):
-        return tour_form.tour_offer.status if hasattr(tour_form, 'tour_offer') else "Не отвечено"
+        return tour_form.tour_offer.status if hasattr(tour_form, 'tour_offer') else "Javob berilmagan"
 
     def dehydrate_answered_by(self, tour_form):
-        return tour_form.tour_offer.answered_by.get_userinfo() if hasattr(tour_form, 'tour_offer') else "Не отвечено"
+        return tour_form.tour_offer.answered_by.get_userinfo() if hasattr(tour_form, 'tour_offer') else \
+            "Javob berilmagan"
 
     def dehydrate_answered_at(self, tour_form):
         if hasattr(tour_form, 'answered_at') and tour_form.answered_at:
             time_difference = tour_form.answered_at - tour_form.created_at
             return time_difference.total_seconds() // 60
-        return "Не отвечено"
+        return "Javob berilmagan"
 
     def dehydrate_is_bought(self, tour_form):
         if tour_form.is_bought:
-            return "Да"
-        return "Нет"
+            return "Ha"
+        return "Yo'q"
 
     def export(self, queryset=None, **kwargs):
         dataset = super().export(queryset=queryset, **kwargs)
 
         dataset.headers = [
-            'ID', 'Кассир', 'Клиент', 'Регион', 'Филиал', 'Штрих код', 'Тип тура', 'Страна', 'Город', 'Дата начала', 'Дата окончания',
-            'Количество комнат', 'Количество дней отдыха', 'Телефон', 'Количество человек', 'Статус', 'Куплено',
-            'Создано', 'Ответили', 'Менеджер'
+            "Zayavka ID", "Sotuvchi", "Mijoz", "Hudud", "Filial", "Shtrix kod", "Sayohat turi", "Davlat", "Shahar",
+            "Boshlanish sanasi", "Tugash sanasi", "Xonalar soni", "Dam olish kunlari soni", "Telefon", "Odamlar soni",
+            "Status", "Sotib olingan", "Yaratilgan vaqti", "Javob berilgan", "Admin"
         ]
 
         return dataset

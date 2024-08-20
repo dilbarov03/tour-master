@@ -19,8 +19,8 @@ class UserBookingResource(resources.ModelResource):
         dataset = super().export(queryset=queryset, **kwargs)
 
         dataset.headers = [
-            'ID', 'Кассир', 'Регион', 'Клиент', 'Username в Telegram', 'Телефон',
-            'Тур', 'Категория', 'Дата начала', 'Штрихкод', 'Общая стоимость', 'Дата создания'
+            "Zayavka ID", "Sotuvchi", "Hudud", "Mijoz", "Telegramdagi foydalanuvchi nomi", "Telefon",
+            "Tur nomi", "Sayohat turi", "Boshlanish sanasi", "Shtrix kod", "Umumiy narxi", "Yaratilgan vaqti"
         ]
 
         return dataset
