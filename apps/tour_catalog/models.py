@@ -46,11 +46,12 @@ class TourPrice(BaseModel):
     name = models.CharField(max_length=255, verbose_name='Nomi')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Narx')
     people_count = models.PositiveIntegerField(verbose_name='Odamlar soni')
+    order = models.PositiveIntegerField(default=1, verbose_name='Tartib')
 
     class Meta:
         verbose_name = 'Tur uchun narx'
         verbose_name_plural = 'Tur uchun narxlar'
-        ordering = ['people_count']
+        ordering = ['order']
 
     def __str__(self):
         return f'{self.tour.name} - {self.name} - {self.price}'
@@ -59,8 +60,12 @@ class TourPrice(BaseModel):
 class UserBooking(BaseModel):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='Sotuvchi',
                              related_name='bookings')
+    region = models.ForeignKey('users.Region', on_delete=models.SET_NULL, verbose_name='Hudud',
+                                 related_name='bookings', null=True, blank=True)
+    branch = models.ForeignKey('users.Branch', on_delete=models.SET_NULL, verbose_name='Filial',
+                                 related_name='bookings', null=True, blank=True)
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, verbose_name='Tur', related_name='bookings')
-    full_name = models.CharField(max_length=255, verbose_name='F.I.O')
+    full_name = models.CharField(max_length=255, verbose_name='Mijoz')
     tg_username = models.CharField(max_length=255, verbose_name='Telegramdagi username')
     phone = models.CharField(max_length=20, verbose_name='Telefon', null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Umumiy narx',

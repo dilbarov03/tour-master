@@ -67,7 +67,7 @@ class TourFormSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         tour_people_data = validated_data.pop("tour_people")
         user = self.context["request"].user
-        tour_form = TourForm.objects.create(user=user, region=user.region, **validated_data)
+        tour_form = TourForm.objects.create(user=user, region=user.region, branch=user.branch, **validated_data)
         for tour_people_data in tour_people_data:
             TourPeople.objects.create(tour_form=tour_form, **tour_people_data)
         send_form_message(tour_form)

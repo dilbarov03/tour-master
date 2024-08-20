@@ -34,7 +34,7 @@ class UserBookingPriceInline(admin.TabularInline):
 @admin.register(UserBooking)
 class UserBookingAdmin(ImportExportModelAdmin, ExportActionMixin):
     inlines = [UserBookingPriceInline]
-    list_display = ('id', 'tour', 'user', 'full_name', 'region', 'total_price', 'is_bought')
-    list_filter = ('tour', 'user', 'region')
-    search_fields = ('tour', 'user')
+    list_display = ('id', 'tour', 'user', 'region', 'branch', 'full_name', 'total_price', 'is_bought')
+    list_filter = ("region", "branch", "user", "created_at", "is_bought")
+    search_fields = ('user__full_name', 'tour__name', 'user__phone', 'tg_username', 'full_name')
     resource_class = UserBookingResource

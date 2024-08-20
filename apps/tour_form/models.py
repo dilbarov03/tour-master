@@ -62,6 +62,8 @@ class TourForm(BaseModel):
                              related_name="tour_forms", null=True, blank=True)
     region = models.ForeignKey("users.Region", on_delete=models.SET_NULL, verbose_name="Hudud",
                                related_name="tour_forms", null=True, blank=True)
+    branch = models.ForeignKey("users.Branch", on_delete=models.SET_NULL, verbose_name="Filial",
+                                 related_name="tour_forms", null=True, blank=True)
     tour_type = models.ForeignKey(TourType, on_delete=models.SET_NULL, verbose_name="Sayohat turi",
                                   related_name="tour_forms", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, verbose_name="Davlat",
@@ -73,7 +75,7 @@ class TourForm(BaseModel):
     to_date = models.DateField(verbose_name="Tugash sanasi")
     holidays = models.PositiveIntegerField(verbose_name="Dam olish kunlari soni")
     phone = models.CharField(max_length=255, verbose_name="Telefon")
-    full_name = models.CharField(max_length=255, verbose_name="F.I.O", null=True, blank=True)
+    full_name = models.CharField(max_length=255, verbose_name="Mijoz", null=True, blank=True)
     comment = models.TextField(verbose_name="Izoh", null=True, blank=True)
     answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Javob berilgan vaqti")
     is_bought = models.BooleanField(default=False, verbose_name="Sotib olingan")
