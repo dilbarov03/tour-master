@@ -66,7 +66,7 @@ class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
     resource_class = TourFormResource
 
     def save_formset(self, request, form, formset, change):
-        if formset.model == TourOffer:
+        if formset.model == TourOffer and formset.forms:
             inline_form = formset.forms[0]
             obj = inline_form.save(commit=False)
             if not obj.pk:  # New object, not yet saved
