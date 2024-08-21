@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('phone', 'full_name', 'phone')
     list_filter = ('branch', 'region', 'user_type')
     ordering = ('phone',)
-    list_per_page = 25
+    list_per_page = 100
 
     fieldsets = (
         (None, {'fields': ('phone', 'password')}),
