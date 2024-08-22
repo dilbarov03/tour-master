@@ -33,7 +33,7 @@ class Branch(BaseModel):
 class User(AbstractUser, BaseModel):
     class UserType(models.TextChoices):
         ADMIN = 'admin', 'Administrator'
-        CLIENT = 'client', 'Mijoz'
+        CLIENT = 'client', 'Sotuvchi'
 
     full_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='F.I.O.')
     phone = models.CharField(max_length=15, unique=True, verbose_name='Telefon')
