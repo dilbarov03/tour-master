@@ -89,7 +89,7 @@ class UserBooking(BaseModel):
 
     @property
     def original_price_formatted(self):
-        return f"{self.original_price:,.0f}".replace(",", " ")
+        return f"{self.original_price:,.0f}".replace(",", " ") if self.original_price else "Yo'q"
 
     total_price_formatted.fget.short_description = 'Umumiy narx'
     original_price_formatted.fget.short_description = 'Asl narx'
