@@ -68,8 +68,10 @@ class UserBooking(BaseModel):
     full_name = models.CharField(max_length=255, verbose_name='Mijoz')
     tg_username = models.CharField(max_length=255, verbose_name='Telegramdagi username')
     phone = models.CharField(max_length=20, verbose_name='Telefon', null=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Umumiy narx',
+    total_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Hisoblangan narx',
                                       null=True, blank=True)
+    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Asl narx',
+                                         null=True, blank=True)
     region = models.ForeignKey('users.Region', on_delete=models.SET_NULL, verbose_name='Hudud',
                                related_name='bookings', null=True, blank=True)
     is_bought = models.BooleanField(default=False, verbose_name='Sotildi')
@@ -80,6 +82,17 @@ class UserBooking(BaseModel):
 
     def __str__(self):
         return f'{self.full_name} - {self.tour.name}'
+
+    @property
+    def total_price_formatted(self):
+        return f"{self.total_price:,.0f}".replace(",", " ")
+
+    @property
+    def original_price_formatted(self):
+        return f"{self.original_price:,.0f}".replace(",", " ")
+
+    total_price_formatted.fget.short_description = 'Umumiy narx'
+    original_price_formatted.fget.short_description = 'Asl narx'
 
 
 class UserBookingPrice(BaseModel):

@@ -58,9 +58,9 @@ class TourFormSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("At least one person should be in the tour")
         elif len(tour_people) > 15:
             raise serializers.ValidationError("Maximum 15 people can be in the tour")
-        # verification_status, message = check_verification_status(phone)
-        # if not verification_status:
-        #     raise serializers.ValidationError("Phone number must be verified first")
+        verification_status, message = check_verification_status(phone)
+        if not verification_status:
+            raise serializers.ValidationError("Phone number must be verified first")
 
         return attrs
 
@@ -87,9 +87,11 @@ class TourFormSerializer(serializers.ModelSerializer):
         return data
 
 class TourOfferSerializer(serializers.ModelSerializer):
+    price = serializers.DecimalField(max_digits=10, decimal_places=0, source="calculated_price")
+
     class Meta:
         model = TourOffer
-        fields = ("id", "image", "text", "status")
+        fields = ("id", "image", "text", "status", "price")
         read_only_fields = ("image", "text")
 
     def validate(self, attrs):

@@ -1,9 +1,12 @@
+from decimal import Decimal
+
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.utils import timezone
 from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
+from apps.common.utils import round_half_up
 from apps.tour_form.managers import ActiveManager
 
 
@@ -100,8 +103,19 @@ class TourForm(BaseModel):
             return ", ".join([person.full_name for person in self.tour_people.all()])
         return "Yo'q"
 
+    def original_price(self):
+        price = self.tour_offer.original_price if hasattr(self, "tour_offer") else None
+        return f"{price:,.0f}".replace(",", " ") if price else "Yo'q"
+
+    def calculated_price(self):
+        price = self.tour_offer.calculated_price if hasattr(self, "tour_offer") else None
+        return f"{price:,.0f}".replace(",", " ") if price else "Yo'q"
+
     has_offer.boolean = True
     has_offer.short_description = "Taklif mavjud"
+    original_price.integer = True
+    original_price.short_description = "Asl narx"
+    calculated_price.short_description = "Hisoblangan narx"
 
 
 class TourPeople(BaseModel):
@@ -132,6 +146,10 @@ class TourOffer(BaseModel):
     text = RichTextUploadingField(verbose_name="Matn")
     status = models.CharField(max_length=255, verbose_name="Status", choices=Status.choices, default=Status.NEW)
     barcode = models.CharField(max_length=255, verbose_name='Shtrixkod', null=True, blank=True)
+    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Haqiqiy narx', null=True,
+                                         blank=True)
+    calculated_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Hisoblangan narx', null=True,
+                                           blank=True)
     answered_by = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Javob berilgan", null=True,
                                     blank=True)
 
@@ -147,4 +165,9 @@ class TourOffer(BaseModel):
         if not self.pk:
             self.tour_form.answered_at = timezone.now()
             self.tour_form.save()
+        user = self.tour_form.user
+        self.calculated_price = round_half_up(
+            self.original_price * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
+        )
         super().save(force_insert, force_update, using, update_fields)
+

@@ -75,16 +75,19 @@ class UserBookingSerializer(serializers.ModelSerializer):
         booking = UserBooking.objects.create(user=user, region=user.region, branch=user.branch, **validated_data)
 
         total_price = 0
+        original_price = 0
         for tour_price_data in tour_prices_data:
             user_booking_price = UserBookingPrice.objects.create(
                 user_booking=booking, total_price=(tour_price_data['tour_price'].price * tour_price_data['count']) *
                                                     (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1),
                 tour_price=tour_price_data['tour_price'], count=tour_price_data['count']
             )
+            original_price += tour_price_data['tour_price'].price * tour_price_data['count']
             total_price += user_booking_price.total_price
 
         booking.region = user.region
         booking.total_price = total_price
+        booking.original_price = original_price
         booking.save()
 
         send_booking_message(booking)

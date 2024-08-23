@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 from pathlib import Path
 
 import environ
@@ -73,3 +74,9 @@ async def listen():
             print(f"< {message}")
 
 # asyncio.run(listen())
+
+# round to nearest ten thousand
+def round_half_up(n, decimals=-4):
+    n = int(n)
+    multiplier = 10 ** decimals
+    return int(n * multiplier + 0.5) / multiplier
