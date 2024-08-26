@@ -44,12 +44,16 @@ class TourFormSerializer(serializers.ModelSerializer):
     tour_people = TourPeopleSerializer(many=True)
     has_answered = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    barcode = serializers.CharField(read_only=True, source="tour_offer.barcode")
+    price = serializers.DecimalField(max_digits=10, decimal_places=0, read_only=True,
+                                     source="tour_offer.calculated_price")
 
     class Meta:
         model = TourForm
         fields = ("id", "room_count", "tour_type", "country", "city",
                   "from_date", "to_date", "holidays", "phone", "comment", "tour_people",
-                  "has_answered", "status", "full_name")
+                  "has_answered", "status", "full_name", "barcode", "price")
+        read_only_fields = ("barcode", "has_answered", "status", "price")
 
     def validate(self, attrs):
         tour_people = attrs["tour_people"]
@@ -86,15 +90,27 @@ class TourFormSerializer(serializers.ModelSerializer):
         data["city"] = TypeCountryCitySerializer(instance.city).data
         return data
 
+
 class TourOfferSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(max_digits=10, decimal_places=0, source="calculated_price")
+    client = serializers.SerializerMethodField()
+    travelers = serializers.SerializerMethodField()
 
     class Meta:
         model = TourOffer
-        fields = ("id", "image", "text", "status", "price")
-        read_only_fields = ("image", "text")
+        fields = ("id", "image", "text", "status", "price", "client", "travelers")
+        read_only_fields = ("image", "text", "price", "client", "travelers")
 
     def validate(self, attrs):
         if self.instance and self.instance.status != "new":
             raise serializers.ValidationError("You can't update this offer")
         return attrs
+
+    def get_client(self, obj):
+        return {
+            "full_name": obj.tour_form.full_name,
+            "phone": obj.tour_form.phone
+        }
+
+    def get_travelers(self, obj):
+        return TourPeopleSerializer(obj.tour_form.tour_people, many=True).data

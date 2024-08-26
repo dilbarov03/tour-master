@@ -48,5 +48,5 @@ class UserBookingAdmin(ImportExportModelAdmin, ExportActionMixin):
 
     def get_list_filter(self, request):
         if request.user.user_type == 'supervisor':
-            return ("branch", "created_at", "is_bought")
+            return "branch", "created_at", "is_bought"
         return self.list_filter

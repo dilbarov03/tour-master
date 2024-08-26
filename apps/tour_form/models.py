@@ -145,16 +145,17 @@ class TourPeople(BaseModel):
 
 class TourOffer(BaseModel):
     class Status(models.TextChoices):
-        NEW = "new"
-        THINKING = "thinking"
-        ACCEPTED = "accepted"
-        REJECTED = "rejected"
+        NEW = "new", "Yangi"
+        OFFERED = "offered", "Taklif etilgan"
+        THINKING = "thinking", "Maslahatlashib ko'raman"
+        ACCEPTED = "accepted", "Buyurtma beraman"
+        REJECTED = "rejected", "Qiziqdim, lekin boshqa safar"
 
     tour_form = models.OneToOneField(TourForm, on_delete=models.CASCADE, verbose_name="Tur buyurtmasi",
                                      related_name="tour_offer")
     image = ResizedImageField(upload_to="tour_offers", verbose_name="Rasm")
     text = RichTextUploadingField(verbose_name="Matn")
-    status = models.CharField(max_length=255, verbose_name="Status", choices=Status.choices, default=Status.NEW)
+    status = models.CharField(max_length=255, verbose_name="Status", choices=Status.choices, default=Status.OFFERED)
     barcode = models.CharField(max_length=255, verbose_name='Turpaket', null=True, blank=True)
     original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Kirim narxi', null=True,
                                          blank=True)
@@ -176,7 +177,8 @@ class TourOffer(BaseModel):
             self.tour_form.answered_at = timezone.now()
             self.tour_form.save()
         user = self.tour_form.user
-        self.calculated_price = round_half_up(
-            self.original_price * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
-        )
+        if self.original_price:
+            self.calculated_price = round_half_up(
+                self.original_price * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
+            )
         super().save(force_insert, force_update, using, update_fields)
