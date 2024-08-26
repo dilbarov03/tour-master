@@ -29,6 +29,7 @@ class TourCategoryAdmin(admin.ModelAdmin):
 class UserBookingPriceInline(admin.TabularInline):
     model = UserBookingPrice
     extra = 0
+    readonly_fields = ('total_price',)
 
 
 @admin.register(UserBooking)

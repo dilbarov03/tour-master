@@ -34,6 +34,7 @@ class User(AbstractUser, BaseModel):
     class UserType(models.TextChoices):
         ADMIN = 'admin', 'Administrator'
         CLIENT = 'client', 'Sotuvchi'
+        SUPERVISOR = 'supervisor', 'Supervizor'
 
     full_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='F.I.O.')
     phone = models.CharField(max_length=15, unique=True, verbose_name='Telefon')

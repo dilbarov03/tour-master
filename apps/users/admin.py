@@ -20,11 +20,12 @@ class UserAdmin(BaseUserAdmin):
         ('Personal info', {'fields': ('full_name', 'branch', 'region', 'user_type')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Groups', {'fields': ('groups',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('phone', 'password1', 'password2'),
+            'fields': ('phone', 'password1', 'password2', 'user_type'),
         }),
     )
 

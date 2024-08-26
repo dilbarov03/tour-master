@@ -106,7 +106,7 @@ class UserBookingPrice(BaseModel):
     tour_price = models.ForeignKey(TourPrice, on_delete=models.CASCADE, verbose_name='Tur uchun narx',
                                    related_name='user_bookings')
     count = models.PositiveIntegerField(verbose_name='Miqdor')
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Umumiy narx')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Sotuv narxi')
 
     class Meta:
         verbose_name = 'Buyurtmadagi tur narxi'
