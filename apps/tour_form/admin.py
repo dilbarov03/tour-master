@@ -57,8 +57,11 @@ class TourOfferInline(admin.StackedInline):
 
 @admin.register(TourForm)
 class TourFormAdmin(ImportExportModelAdmin, ExportActionMixin):
-    list_display = ["id", "user", "region", "branch", "tour_type", "country", "from_date", "to_date", "full_name",
-                    "phone", "has_offer", "original_price", "calculated_price", "is_bought"]
+    t = ('id', 'tour', 'user', 'region', 'branch', 'full_name', 'original_price_formatted',
+     'total_price_formatted', 'is_bought')
+
+    list_display = ["id", "tourname", "user", "region", "branch", "full_name", "people_count", "original_price",
+                    "calculated_price", "is_bought"]
     list_filter = ["region", "branch", "user", "created_at", "is_bought"]
     search_fields = ["user__username", "user__full_name", "full_name", "phone", "barcode"]
     list_per_page = 25

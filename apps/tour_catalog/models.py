@@ -1,6 +1,6 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
-from django.db.models import Min
+from django.db.models import Min, Sum
 from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
@@ -68,9 +68,9 @@ class UserBooking(BaseModel):
     full_name = models.CharField(max_length=255, verbose_name='Mijoz')
     tg_username = models.CharField(max_length=255, verbose_name='Telegramdagi username')
     phone = models.CharField(max_length=20, verbose_name='Telefon', null=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Hisoblangan narx',
+    total_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Sotuv narxi',
                                       null=True, blank=True)
-    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Asl narx',
+    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Kirim narxi',
                                          null=True, blank=True)
     region = models.ForeignKey('users.Region', on_delete=models.SET_NULL, verbose_name='Hudud',
                                related_name='bookings', null=True, blank=True)
@@ -89,10 +89,15 @@ class UserBooking(BaseModel):
 
     @property
     def original_price_formatted(self):
-        return f"{self.original_price:,.0f}".replace(",", " ") if self.original_price else "Yo'q"
+        return f"{self.original_price:,.0f}".replace(",", " ") if self.original_price else "-"
 
-    total_price_formatted.fget.short_description = 'Umumiy narx'
-    original_price_formatted.fget.short_description = 'Asl narx'
+    @property
+    def people_count(self):
+        return self.tour_prices.aggregate(people_count=Sum('count'))['people_count']
+
+    total_price_formatted.fget.short_description = 'Sotuv narxi'
+    original_price_formatted.fget.short_description = 'Kirim narxi'
+    people_count.fget.short_description = 'Odamlar soni'
 
 
 class UserBookingPrice(BaseModel):

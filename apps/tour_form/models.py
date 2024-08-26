@@ -66,7 +66,7 @@ class TourForm(BaseModel):
     region = models.ForeignKey("users.Region", on_delete=models.SET_NULL, verbose_name="Hudud",
                                related_name="tour_forms", null=True, blank=True)
     branch = models.ForeignKey("users.Branch", on_delete=models.SET_NULL, verbose_name="Filial",
-                                 related_name="tour_forms", null=True, blank=True)
+                               related_name="tour_forms", null=True, blank=True)
     tour_type = models.ForeignKey(TourType, on_delete=models.SET_NULL, verbose_name="Sayohat turi",
                                   related_name="tour_forms", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, verbose_name="Davlat",
@@ -81,7 +81,7 @@ class TourForm(BaseModel):
     full_name = models.CharField(max_length=255, verbose_name="Mijoz", null=True, blank=True)
     comment = models.TextField(verbose_name="Izoh", null=True, blank=True)
     answered_at = models.DateTimeField(null=True, blank=True, verbose_name="Javob berilgan vaqti")
-    is_bought = models.BooleanField(default=False, verbose_name="Sotib olingan")
+    is_bought = models.BooleanField(default=False, verbose_name="Sotildi")
 
     class Meta:
         verbose_name = "Buyurtma"
@@ -101,21 +101,31 @@ class TourForm(BaseModel):
     def get_people(self):
         if hasattr(self, "tour_people"):
             return ", ".join([person.full_name for person in self.tour_people.all()])
-        return "Yo'q"
+        return "-"
 
     def original_price(self):
         price = self.tour_offer.original_price if hasattr(self, "tour_offer") else None
-        return f"{price:,.0f}".replace(",", " ") if price else "Yo'q"
+        return f"{price:,.0f}".replace(",", " ") if price else "-"
 
     def calculated_price(self):
         price = self.tour_offer.calculated_price if hasattr(self, "tour_offer") else None
-        return f"{price:,.0f}".replace(",", " ") if price else "Yo'q"
+        return f"{price:,.0f}".replace(",", " ") if price else "-"
+
+    def tourname(self):
+        if hasattr(self, "tour_offer"):
+            return self.tour_offer.barcode
+        return "-"
+
+    def people_count(self):
+        return self.tour_people.count()
 
     has_offer.boolean = True
     has_offer.short_description = "Taklif mavjud"
     original_price.integer = True
-    original_price.short_description = "Asl narx"
-    calculated_price.short_description = "Hisoblangan narx"
+    original_price.short_description = "Kirim narxi"
+    calculated_price.short_description = "Sotuv narxi"
+    tourname.short_description = "Tur"
+    people_count.short_description = "Odamlar soni"
 
 
 class TourPeople(BaseModel):
@@ -145,10 +155,10 @@ class TourOffer(BaseModel):
     image = ResizedImageField(upload_to="tour_offers", verbose_name="Rasm")
     text = RichTextUploadingField(verbose_name="Matn")
     status = models.CharField(max_length=255, verbose_name="Status", choices=Status.choices, default=Status.NEW)
-    barcode = models.CharField(max_length=255, verbose_name='Shtrixkod', null=True, blank=True)
-    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Haqiqiy narx', null=True,
+    barcode = models.CharField(max_length=255, verbose_name='Turpaket', null=True, blank=True)
+    original_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Kirim narxi', null=True,
                                          blank=True)
-    calculated_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Hisoblangan narx', null=True,
+    calculated_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Sotuv narxi', null=True,
                                            blank=True)
     answered_by = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Javob berilgan", null=True,
                                     blank=True)
@@ -170,4 +180,3 @@ class TourOffer(BaseModel):
             self.original_price * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
         )
         super().save(force_insert, force_update, using, update_fields)
-
