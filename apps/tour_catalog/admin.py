@@ -16,14 +16,14 @@ class TourAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'start_date', 'days_count', 'people_count', 'is_active')
     list_display_links = ('id', 'name')
     list_filter = ('category', 'start_date', 'is_active')
-    search_fields = ('name', )
+    search_fields = ('name',)
 
 
 @admin.register(TourCategory)
 class TourCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'is_active', 'order')
-    list_filter = ('is_active', )
-    search_fields = ('name', )
+    list_filter = ('is_active',)
+    search_fields = ('name',)
 
 
 class UserBookingPriceInline(admin.TabularInline):
@@ -40,3 +40,13 @@ class UserBookingAdmin(ImportExportModelAdmin, ExportActionMixin):
     list_filter = ("region", "branch", "user", "created_at", "is_bought")
     search_fields = ('user__full_name', 'tour__name', 'user__phone', 'tg_username', 'full_name')
     resource_class = UserBookingResource
+
+    def get_queryset(self, request):
+        if request.user.user_type == 'supervisor':
+            return self.model.objects.filter(region=request.user.region)
+        return super().get_queryset(request)
+
+    def get_list_filter(self, request):
+        if request.user.user_type == 'supervisor':
+            return ("branch", "created_at", "is_bought")
+        return self.list_filter
