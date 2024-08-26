@@ -18,7 +18,8 @@ class TourCategoryListAPIView(generics.ListAPIView):
 
 
 class TourListAPIView(generics.ListAPIView):
-    queryset = Tour.objects.all()
+    queryset = Tour.objects.filter(is_active=True, category__is_active=True, start_date__gte=timezone.now().date(),
+                                   people_count__gt=0)
     serializer_class = TourListSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',)
