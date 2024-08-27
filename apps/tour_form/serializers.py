@@ -102,7 +102,7 @@ class TourOfferSerializer(serializers.ModelSerializer):
         read_only_fields = ("image", "text", "price", "client", "travelers")
 
     def validate(self, attrs):
-        if self.instance and self.instance.status != "new":
+        if self.instance and self.instance.status != "offered":
             raise serializers.ValidationError("You can't update this offer")
         return attrs
 
