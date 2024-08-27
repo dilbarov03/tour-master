@@ -76,7 +76,10 @@ async def listen():
 # asyncio.run(listen())
 
 # round to nearest ten thousand
-def round_half_up(n, decimals=-4):
-    n = int(n)
-    multiplier = 10 ** decimals
-    return int(n * multiplier + 0.5) / multiplier
+def round_up(number):
+    remainder = number % 10000
+
+    if remainder == 0:
+        return number
+
+    return number + (10000 - remainder)

@@ -6,7 +6,7 @@ from django.utils import timezone
 from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
-from apps.common.utils import round_half_up
+from apps.common.utils import round_up
 from apps.tour_form.managers import ActiveManager
 
 
@@ -178,7 +178,7 @@ class TourOffer(BaseModel):
             self.tour_form.save()
         user = self.tour_form.user
         if self.original_price:
-            self.calculated_price = round_half_up(
+            self.calculated_price = round_up(
                 self.original_price * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
             )
         super().save(force_insert, force_update, using, update_fields)

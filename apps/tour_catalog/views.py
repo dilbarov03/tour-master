@@ -9,20 +9,12 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Tour, TourCategory, UserBooking
 from .serializers import TourCategorySerializer, TourListSerializer, TourDetailSerializer, UserBookingSerializer
+from ..common.utils import round_up
 
 
 class TourCategoryListAPIView(generics.ListAPIView):
     queryset = TourCategory.objects.filter(is_active=True)
     serializer_class = TourCategorySerializer
-    permission_classes = (IsAuthenticated,)
-
-
-class TourListAPIView(generics.ListAPIView):
-    queryset = Tour.objects.filter(is_active=True, category__is_active=True, start_date__gte=timezone.now().date(),
-                                   people_count__gt=0)
-    serializer_class = TourListSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category',)
     permission_classes = (IsAuthenticated,)
 
 
@@ -38,8 +30,8 @@ class TourListNewAPIView(generics.ListAPIView):
         return Tour.objects.filter(is_active=True).filter(
             is_active=True, category__is_active=True, start_date__gte=timezone.now().date(),
             people_count__gt=0).annotate(
-            min_price=Min('prices__price') * (1 + Decimal(self.request.user.branch.coefficient) / 100)
-            if self.request.user.branch else Min('prices__price')
+            min_price=round_up(Min('prices__price') * (1 + Decimal(self.request.user.branch.coefficient) / 100)
+            if self.request.user.branch else Min('prices__price'))
         )
 
 

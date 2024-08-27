@@ -4,7 +4,7 @@ from django.db.models import Min, F
 from rest_framework import serializers
 
 from .models import Tour, TourCategory, TourPrice, UserBookingPrice, UserBooking
-from ..common.utils import send_booking_message
+from ..common.utils import send_booking_message, round_up
 
 
 class TourCategorySerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class TourCategorySerializer(serializers.ModelSerializer):
 
 
 class TourListSerializer(serializers.ModelSerializer):
-    min_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    min_price = serializers.DecimalField(max_digits=10, decimal_places=0)
 
     class Meta:
         model = Tour
@@ -22,7 +22,6 @@ class TourListSerializer(serializers.ModelSerializer):
 
     # def get_min_price(self, obj):
     #     min_price = obj.prices.all().aggregate(Min('price'))['price__min']
-
 
 
 class TourPriceSerializer(serializers.ModelSerializer):
@@ -43,7 +42,7 @@ class TourDetailSerializer(serializers.ModelSerializer):
     def get_prices(self, obj):
         user = self.context['request'].user
         prices = obj.prices.filter(people_count__gt=0).annotate(
-            final_price=F('price') * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
+            final_price=round_up(F('price') * (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1))
         )
         serializer = TourPriceSerializer(prices, many=True)
         return serializer.data
@@ -77,9 +76,11 @@ class UserBookingSerializer(serializers.ModelSerializer):
         total_price = 0
         original_price = 0
         for tour_price_data in tour_prices_data:
+            price = (tour_price_data['tour_price'].price * tour_price_data['count']) * (
+                1 + Decimal(user.branch.coefficient / 100) if user.branch else 1)
+
             user_booking_price = UserBookingPrice.objects.create(
-                user_booking=booking, total_price=(tour_price_data['tour_price'].price * tour_price_data['count']) *
-                                                    (1 + Decimal(user.branch.coefficient / 100) if user.branch else 1),
+                user_booking=booking, total_price=round_up(price),
                 tour_price=tour_price_data['tour_price'], count=tour_price_data['count']
             )
             original_price += tour_price_data['tour_price'].price * tour_price_data['count']
