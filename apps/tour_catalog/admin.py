@@ -50,3 +50,8 @@ class UserBookingAdmin(ImportExportModelAdmin, ExportActionMixin):
         if request.user.user_type == 'supervisor':
             return "branch", "created_at", "is_bought"
         return self.list_filter
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.user_type == "supervisor":
+            return [f.name for f in self.model._meta.fields if f.name != "is_bought"]
+        return self.readonly_fields

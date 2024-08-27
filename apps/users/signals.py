@@ -16,8 +16,8 @@ def add_supervisor_group(sender, instance, created, **kwargs):
             ('change_userbookingprice',), ('view_userbookingprice',),
 
             ('change_tourform',), ('view_tourform',),
-            ('change_touroffer',), ('view_touroffer',),
-            ('change_tourpeople',), ('view_tourpeople',),
+            ('view_touroffer',),
+            ('view_tourpeople',),
         ]
 
         for codename in codenames:
