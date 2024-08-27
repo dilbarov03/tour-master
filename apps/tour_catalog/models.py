@@ -1,9 +1,12 @@
+from decimal import Decimal
+
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.db.models import Min, Sum
 from django_resized import ResizedImageField
 
 from apps.common.models import BaseModel
+from apps.common.utils import round_up
 from apps.tour_catalog.managers import TourManager, TourPriceManager
 
 
@@ -83,6 +86,21 @@ class UserBooking(BaseModel):
     def __str__(self):
         return f'{self.full_name} - {self.tour.name}'
 
+    def update_total_price(self):
+        self.original_price = self.tour_prices.aggregate(total_price=Sum('total_price'))['total_price']
+        self.total_price = round_up(
+            self.original_price * (1 + Decimal(self.user.branch.coefficient / 100) if self.user.branch else 1)
+        )
+        print("This is update_total_price")
+        self.save()
+
+    def save(self, *args, **kwargs):
+        if self.original_price:
+            self.total_price = round_up(
+                self.original_price * (1 + Decimal(self.user.branch.coefficient / 100) if self.user.branch else 1)
+            )
+        super().save(*args, **kwargs)
+
     @property
     def total_price_formatted(self):
         return f"{self.total_price:,.0f}".replace(",", " ")
@@ -114,3 +132,9 @@ class UserBookingPrice(BaseModel):
 
     def __str__(self):
         return f'{self.user_booking.full_name} - {self.tour_price.tour.name} - {self.tour_price.name} - {self.count}'
+
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.count * self.tour_price.price
+        super().save(*args, **kwargs)
+        self.user_booking.update_total_price()
