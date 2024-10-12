@@ -33,6 +33,23 @@ def refresh_token():
         raise Exception(f"Failed to refresh token, status code: {response.status_code}, response: {response.text}")
 
 
+def get_new_token():
+    url = 'https://notify.eskiz.uz/api/auth/login'
+
+    request_body = {
+        "email": os.getenv("SMS_EMAIL"),
+        "password": os.getenv("SMS_PASSWORD")
+    }
+
+    response = requests.post(url, json=request_body)
+
+    if response.status_code == 200:
+        token = response.json()['data']['token']
+        set_key('.env', 'SMS_TOKEN', token)
+        return token
+    else:
+        raise Exception(f"Failed to get new token, status code: {response.status_code}, response: {response.text}")
+
 def send_code(phone_number):
     if cache.get(phone_number):
         return False, "Code already sent"
@@ -88,7 +105,7 @@ def send_sms(phone="998972081018", code=111111):
     response = requests.post(url, headers=headers, json=data)
 
     if response.status_code == 401:
-        token = refresh_token()
+        token = get_new_token()
         headers["Authorization"] = f"Bearer {token}"
         response = requests.post(url, headers=headers, data=data)
 
