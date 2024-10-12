@@ -17,7 +17,7 @@ class TourFormResource(resources.ModelResource):
                   'holidays', 'phone', 'people_count', 'status', 'is_bought', 'created_at', 'answered_at', 'answered_by')
 
     def dehydrate_user(self, tour_form):
-        return tour_form.user.get_userinfo()
+        return tour_form.user.get_userinfo() if hasattr(tour_form, 'user') else "Sotuvchi yo'q"
 
     def dehydrate_people_count(self, tour_form):
         return tour_form.tour_people.count()
