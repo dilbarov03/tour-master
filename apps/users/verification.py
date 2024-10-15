@@ -12,27 +12,6 @@ def generate_code():
     return randint(100000, 999999)
 
 
-# def refresh_token():
-#     url = 'https://notify.eskiz.uz/api/auth/refresh'
-#
-#     current_token = os.getenv("SMS_TOKEN")
-#     headers = {
-#         "Authorization": f"Bearer {current_token}",
-#     }
-#
-#     response = requests.patch(url, headers=headers)
-#
-#     if response.status_code == 200:
-#         new_token = response.json()['token']
-#
-#         # Update the .env file with the new token
-#         set_key('.env', 'SMS_TOKEN', new_token)
-#
-#         return new_token
-#     else:
-#         raise Exception(f"Failed to refresh token, status code: {response.status_code}, response: {response.text}")
-
-
 def get_new_token():
     url = 'https://notify.eskiz.uz/api/auth/login'
 
