@@ -15,9 +15,13 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 BASE_URL = env.str("BASE_URL")
 
 
-def send_telegram_message(text="Text"):
+def send_telegram_message(text="Text", branch=None):
     token = env.str("BOT_TOKEN")
-    chat_id = env.str("CHAT_ID")
+
+    if branch and branch.name == "Maxsus":
+        chat_id = "-1002329450762"
+    else:
+        chat_id = env.str("CHAT_ID")
 
     url = "https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&parse_mode=html".format(token, chat_id, text)
     requests.post(url)
@@ -39,8 +43,7 @@ def send_booking_message(booking):
         f"<b>Link:</b> {BASE_URL}/admin/tour_catalog/userbooking/{booking.id}/change/\n"
     )
 
-
-    send_telegram_message(text)
+    send_telegram_message(text, booking.branch)
     return
 
 
@@ -60,8 +63,7 @@ def send_form_message(form):
         f"<b>Link:</b> {BASE_URL}/admin/tour_form/tourform/{form.id}/change/\n"
     )
 
-
-    send_telegram_message(text)
+    send_telegram_message(text, form.branch)
     return
 
 
@@ -72,6 +74,7 @@ async def listen():
         while True:
             message = await websocket.recv()
             print(f"< {message}")
+
 
 # asyncio.run(listen())
 
